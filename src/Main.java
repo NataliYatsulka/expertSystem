@@ -3,13 +3,13 @@ import org.apache.commons.cli.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Main {
-    public static List<String> facts = new ArrayList<>();
+    public static String[] facts = new String[32];
     public static List<String> rules =  Arrays.asList("(", ")", "!", "+", "|", "^", "=>", "<=>");
+    public static String[] queries = new String[32];
 
     public static void main(String[] args) {
         String path = null;
@@ -34,8 +34,8 @@ public class Main {
                     Parser.deleteComments(list);
                 else
                     Message.exception("ERROR:  The list is empty");
+                Parser.checkFileOnFactQueries(list);
                 Parser.checkFile(list);
-                Parser.checkFileOnFact(list);
             }
         } catch (ParseException | IOException ex) {
             System.out.println(ex.getMessage());

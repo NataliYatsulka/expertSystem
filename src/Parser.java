@@ -5,7 +5,6 @@ import org.apache.commons.cli.Options;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.List;
 
 public class Parser {
@@ -51,25 +50,35 @@ public class Parser {
         }
     }
 
-    public static void checkFileOnFact(List<String> list) {
+
+    public static void checkFileOnFactQueries(List<String> list) {
         int count = 0;
-        for (String s : list) {
-            if (s.matches("=[A-Z]+")) {
-                System.out.println("dano: " + s);
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).matches("=[A-Z]+")) {
+                Main.facts[0] = list.get(i);
+                System.out.println("Main.fact: " + Main.facts[0]);
+                list.remove(i);
+                i--;
                 count++;
             }
-            if (s.matches("\\?[A-Z]+")) {
-                System.out.println("should find: " + s);
+            if (list.get(i).matches("\\?[A-Z]+")) {
+                Main.queries[0] = list.get(i);
+                System.out.println("Main.queries: " + Main.queries[0]);
+                list.remove(i);
+                i--;
                 count++;
             }
         }
+        System.out.println(list);
         if (count != 2)
             Message.exception("ERROR:  more than one time = or ?");
     }
 
     public static boolean checkFile(List<String> list) {
         for (int i = 0; i < list.size(); i++) {
-            list.get(i).matches("[A-Z]");
+//            list.get(i).matches("[A-Z]");
+            if (!list.get(i).matches(".+=>.+") && !list.get(i).matches(".+<=>.+"))
+                Message.exception("ERROR:  One of the line have bad initialization in row  " + list.get(i));
         }
         return true;
     }
