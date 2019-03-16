@@ -23,8 +23,8 @@ public class Main {
         HelpFormatter formatter = new HelpFormatter();
 
         try {
-            if (args.length != 2)
-                Message.exception("Bad length of args");
+            if (args.length < 2)
+                Parser.usage(formatter, options);
             CommandLine cmd = new BasicParser().parse(options, args);
             path = cmd.getOptionValue("path");
             System.out.println("path = " + path);

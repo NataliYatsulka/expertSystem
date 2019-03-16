@@ -1,10 +1,12 @@
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Parser {
@@ -55,14 +57,16 @@ public class Parser {
     int count = 0;
     for (int i = 0; i < list.size(); i++) {
       if (list.get(i).matches("=[A-Z]+")) {
-        Main.facts[0] = list.get(i);
+        String[] s = list.get(i).split("=");
+        Main.facts[0] = s[1];
         System.out.println("Main.fact: " + Main.facts[0]);
         list.remove(i);
         i--;
         count++;
       }
       if (list.get(i).matches("\\?[A-Z]+")) {
-        Main.queries[0] = list.get(i);
+        String[] s = list.get(i).split("\\?");
+        Main.queries[0] = s[1];
         System.out.println("Main.queries: " + Main.queries[0]);
         list.remove(i);
         i--;
@@ -74,25 +78,44 @@ public class Parser {
       Message.exception("ERROR:  more than one time = or ?");
   }
 
+  public static void checkLeftRightSiteOfRow(ArrayList<String> left, ArrayList<String> right) {
+    int couunt = 0;
+    for (int i = 0; i < left.size(); i++) {
+      System.out.print(couunt++ + " ");
+      if (left.get(i).matches("(!*\\(*!*[A-Z][|+^]?[A-Z]?\\)*)+([[|+^]?\\(*!*[A-Z][|+^]?[A-Z]?\\)*])*")) {
+        System.out.print("YES");
+      } else {
+        System.out.println("NO");
+      }
+      if (right.get(i).matches("(!*\\(*!?[A-Z][|+^]?(!?[A-Z])?\\)*)+([[|+^]?\\(*!*[A-Z][|+^]?[A-Z]?\\)*])*"))
+        System.out.print("YESss");
+      else
+        System.out.println("NOoo");
+      System.out.println();
+    }
+  }
+
   public static boolean checkFile(List<String> list) {
     for (int i = 0; i < list.size(); i++) {
-//      list.get(i).matches("[A-Z]");
-//      if (!list.get(i).matches(".+=>.+") && !list.get(i).matches(".+<=>.+"))
-//        Message.exception("ERROR:  One of the line have bad initialization in row  " + list.get(i));
-
+      String[] tmp = list.get(i).split("<=>");
       if (list.get(i).matches(".+<=>.+")) {
-        String[] tmp = list.get(i).split("<=>");
         Main.leftPart.add(tmp[0]);
         Main.rightPart.add(tmp[1]);
       } else if (list.get(i).matches(".+=>.+")) {
-        String[] tmp = list.get(i).split("=>");
+        tmp = list.get(i).split("=>");
         Main.leftPart.add(tmp[0]);
         Main.rightPart.add(tmp[1]);
       } else
         Message.exception("ERROR:  One of the line have bad initialization in row  " + list.get(i));
+      if ((StringUtils.countMatches(tmp[0], "(") != StringUtils.countMatches(tmp[0], ")")) ||
+              (StringUtils.countMatches(tmp[1], "(") != StringUtils.countMatches(tmp[1], ")")))
+        Message.exception("ERROR:  You forgot () in the row");
+//      if (tmp[0].matches("([A-Z][A-Z]+[+|^][+|^]+[A-Z][A-Z]+)+"))
+//        Message.exception("ERROR:  Bad row " + i);
     }
     System.out.println(Main.leftPart);
     System.out.println(Main.rightPart);
+    checkLeftRightSiteOfRow(Main.leftPart, Main.rightPart);
     return true;
   }
 }
