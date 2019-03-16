@@ -3,6 +3,7 @@ import org.apache.commons.cli.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -10,6 +11,9 @@ public class Main {
     public static String[] facts = new String[32];
     public static List<String> rules =  Arrays.asList("(", ")", "!", "+", "|", "^", "=>", "<=>");
     public static String[] queries = new String[32];
+    public static ArrayList<String> leftPart = new ArrayList<>();
+    public static ArrayList<String> rightPart = new ArrayList<>();
+
 
     public static void main(String[] args) {
         String path = null;
