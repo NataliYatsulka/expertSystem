@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Parser {
+  public static int[][] mas;
 
   public static Options parsingInputArgs(String[] args) {
     Options options = new Options();
@@ -78,20 +79,36 @@ public class Parser {
       Message.exception("ERROR:  more than one time = or ?");
   }
 
-  public static void checkLeftRightSiteOfRow(ArrayList<String> left, ArrayList<String> right) {
-    int couunt = 0;
+  public static boolean isLetterOrSign(char c) {
+    return (c >= 'A' && c <= 'Z') || c == '(' || c == ')' || c == '+' || c == '^' || c == '|' || c == '!';
+  }
+
+  public static void checkLeftRightSiteOfRow(ArrayList<String> left) {
+
     for (int i = 0; i < left.size(); i++) {
-      System.out.print(couunt++ + " ");
-      if (left.get(i).matches("(!*\\(*!*[A-Z][|+^]?[A-Z]?\\)*)+([[|+^]?\\(*!*[A-Z][|+^]?[A-Z]?\\)*])*")) {
-        System.out.print("YES");
-      } else {
-        System.out.println("NO");
+      for (int j = 0; j < left.get(i).length(); j++) {
+        if (!isLetterOrSign(left.get(i).charAt(j)))
+          Message.exception("ERROR:  Not right row " + i);
+        char c = left.get(i).charAt(j);
+        char prev = c;
+
+        if (j == 0 && left.get(i).length() == 1) {
+          if (!Character.isLetter(prev))
+            Message.exception("ERROR:  Row can be only A-Z in row " + i);
+        } else if (j != left.get(i).length() - 1) {
+          char next = left.get(i).charAt(j + 1);
+          if (j == 0 && (c == ')' || c == '+' || c == '^' || c == '|')) {
+            Message.exception("ERROR:  Row can not start by " + c);
+          } else if (j == left.get(i).length() - 1 && (c == '(' || c == '+' || c == '^' || c == '|')) {
+            Message.exception("ERROR:  Row can not end " + c);
+          } else if ((prev == '!' && (next == '+' || next == '^' || next == '|' || next == '!'))
+                  || (prev == '(' && (next == '+' || next == '^' || next == '|' || next == ')'))
+                  || ((Character.isLetter(prev) || prev == ')') && (next == '(' || Character.isLetter(next) || next == '!'))
+                  || ((prev == '+' || prev == '^' || prev == '|') && (next == '+' || next == '^' || next == '|' || next == ')')))
+            Message.exception("ERROR:  Row can not have after " + prev + " - " + next);
+
+        }
       }
-      if (right.get(i).matches("(!*\\(*!?[A-Z][|+^]?(!?[A-Z])?\\)*)+([[|+^]?\\(*!*[A-Z][|+^]?[A-Z]?\\)*])*"))
-        System.out.print("YESss");
-      else
-        System.out.println("NOoo");
-      System.out.println();
     }
   }
 
@@ -115,7 +132,12 @@ public class Parser {
     }
     System.out.println(Main.leftPart);
     System.out.println(Main.rightPart);
-    checkLeftRightSiteOfRow(Main.leftPart, Main.rightPart);
+    checkLeftRightSiteOfRow(Main.leftPart);
+    checkLeftRightSiteOfRow(Main.rightPart);
     return true;
+  }
+
+  public static void parseToArr() {
+
   }
 }
