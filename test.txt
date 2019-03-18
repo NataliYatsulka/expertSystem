@@ -13,7 +13,7 @@ C | D => X | V # C or D implies X or V
 E + F => !V # E and F implies not V
 A + B <=> C # A and B if and only if C
 A + A <=> !C # A and B if and only if not C
-!((!A + !G) | !Y ^ (I ^ Q))=> (A)
+!((!A + !G) | !Y ^ (I ^ Q))=> (J)
 !(((A))) => W
 
 =ABG

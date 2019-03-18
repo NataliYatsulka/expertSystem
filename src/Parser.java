@@ -59,22 +59,23 @@ public class Parser {
     for (int i = 0; i < list.size(); i++) {
       if (list.get(i).matches("=[A-Z]+")) {
         String[] s = list.get(i).split("=");
-        Main.facts[0] = s[1];
-        System.out.println("Main.fact: " + Main.facts[0]);
+        for (int k = 0; k < s[1].length(); k++)
+          Main.facts.add(s[1].charAt(k));
         list.remove(i);
         i--;
         count++;
       }
       if (list.get(i).matches("\\?[A-Z]+")) {
         String[] s = list.get(i).split("\\?");
-        Main.queries[0] = s[1];
-        System.out.println("Main.queries: " + Main.queries[0]);
+        for (int k = 0; k < s[1].length(); k++)
+          Main.queries.add(s[1].charAt(k));
         list.remove(i);
         i--;
         count++;
       }
     }
     System.out.println(list);
+    System.out.println(Main.facts + "     " + Main.queries);
     if (count != 2)
       Message.exception("ERROR:  more than one time = or ?");
   }
@@ -92,11 +93,16 @@ public class Parser {
         char c = left.get(i).charAt(j);
         char prev = c;
 
+        if (Character.isLetter(prev))
+          Main.mapOfFacts.put(prev, null);
+
         if (j == 0 && left.get(i).length() == 1) {
           if (!Character.isLetter(prev))
             Message.exception("ERROR:  Row can be only A-Z in row " + i);
         } else if (j != left.get(i).length() - 1) {
+
           char next = left.get(i).charAt(j + 1);
+
           if (j == 0 && (c == ')' || c == '+' || c == '^' || c == '|')) {
             Message.exception("ERROR:  Row can not start by " + c);
           } else if (j == left.get(i).length() - 1 && (c == '(' || c == '+' || c == '^' || c == '|')) {
@@ -106,9 +112,14 @@ public class Parser {
                   || ((Character.isLetter(prev) || prev == ')') && (next == '(' || Character.isLetter(next) || next == '!'))
                   || ((prev == '+' || prev == '^' || prev == '|') && (next == '+' || next == '^' || next == '|' || next == ')')))
             Message.exception("ERROR:  Row can not have after " + prev + " - " + next);
-
         }
       }
+    }
+  }
+
+  public static void addFactsToMap(){
+    for (int i = 0; i < Main.facts.size(); i++){
+      Main.mapOfFacts.put(Main.facts.get(i), true);
     }
   }
 
@@ -134,6 +145,9 @@ public class Parser {
     System.out.println(Main.rightPart);
     checkLeftRightSiteOfRow(Main.leftPart);
     checkLeftRightSiteOfRow(Main.rightPart);
+    addFactsToMap();
+    System.out.println(Main.mapOfFacts);
+
     return true;
   }
 

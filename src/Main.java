@@ -5,15 +5,26 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class Main {
-    public static String[] facts = new String[32];
-    public static List<String> rules =  Arrays.asList("(", ")", "!", "+", "|", "^", "=>", "<=>");
-    public static String[] queries = new String[32];
+//    public static String[] facts = new String[32];
+//    public static List<String> rules =  Arrays.asList("(", ")", "!", "+", "|", "^", "=>", "<=>");
+//    public static String[] queries = new String[32];
+
+    public static HashMap<Character, Boolean> mapOfFacts = new HashMap<Character, Boolean>();
+    public static ArrayList<Character> facts = new ArrayList<>();
+    public static ArrayList<Character> queries = new ArrayList<>();
     public static ArrayList<String> leftPart = new ArrayList<>();
     public static ArrayList<String> rightPart = new ArrayList<>();
 
+    public static void outputRes(){
+        System.out.println("\u001B[32m" + "The Result is next: " + "\u001B[0m");
+        for (int i = 0; i < queries.size(); i++){
+            System.out.println("\u001B[32m" + queries.get(i) + " = " + mapOfFacts.get(queries.get(i)) + "\u001B[0m");
+        }
+    }
 
     public static void main(String[] args) {
         String path = null;
@@ -40,6 +51,8 @@ public class Main {
                     Message.exception("ERROR:  The list is empty");
                 Parser.checkFileOnFactQueries(list);
                 Parser.checkFile(list);
+
+                outputRes();
             }
         } catch (ParseException | IOException ex) {
             System.out.println(ex.getMessage());
