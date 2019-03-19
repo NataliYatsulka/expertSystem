@@ -58,6 +58,7 @@ public class Main {
             System.out.println(ex.getMessage());
             Parser.usage(formatter, options);
         }
+        Algo.parse(Main.leftPart.get(11));
         System.out.println("End!");
     }
 }
