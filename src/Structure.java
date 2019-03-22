@@ -5,6 +5,7 @@ public class Structure {
   public boolean beingInThisRow;
 
   public Structure(String leftSide, String rightSize, boolean equivalentFlag, boolean beingInThisRow) {
+
     this.leftSide = leftSide;
     this.rightSize = rightSize;
     this.equivalentFlag = equivalentFlag;

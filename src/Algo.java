@@ -65,7 +65,7 @@ public class Algo {
       if (isOperator(stack.peek()))
         postfix.add(stack.pop());
     }
-    System.out.println(postfix);
+//    System.out.println(postfix);
     return postfix;
   }
 

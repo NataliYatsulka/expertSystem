@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class Parser {
   public static int[][] mas;
@@ -139,14 +140,12 @@ public class Parser {
         structures.add(new Structure(tmp[0], tmp[1], false, false));
       } else
         Message.exception("ERROR:  One of the line have bad initialization in row  " + list.get(i));
+      Main.leftPart.add(tmp[0]);
+      Main.rightPart.add(tmp[1]);
       if ((StringUtils.countMatches(tmp[0], "(") != StringUtils.countMatches(tmp[0], ")")) ||
               (StringUtils.countMatches(tmp[1], "(") != StringUtils.countMatches(tmp[1], ")")))
         Message.exception("ERROR:  You forgot () in the row");
-//      if (tmp[0].matches("([A-Z][A-Z]+[+|^][+|^]+[A-Z][A-Z]+)+"))
-//        Message.exception("ERROR:  Bad row " + i);
     }
-//    System.out.println(Main.leftPart);
-//    System.out.println(Main.rightPart);
     checkLeftRightSiteOfRow(Main.leftPart);
     checkLeftRightSiteOfRow(Main.rightPart);
     addFactsToMap();
@@ -155,14 +154,23 @@ public class Parser {
     for (int z = 0; z < structures.size(); z++) {
       System.out.println("qqq    = " + structures.get(z).toString());
     }
-//    System.out.println(structures.toString());
-//    for (Structure s: structures) {
-//      System.out.println(s[5]);
-//    }
+    try {
+      Parser.bc(structures);
+    } catch (IOException ex) {
+      System.out.println(ex.getMessage());
+      Message.exception("OPPSSS...");
+    }
+
     return true;
   }
 
-  public static void parseToArr() {
-
+  public static void bc(List<Structure> structures) throws IOException {
+    Stack<Boolean> stack = new Stack<>();
+    while (!Main.table.isEmpty()) {
+      Character c;
+      if (Main.facts.contains(c)) {
+        stack.add(true);
+      }
+    }
   }
 }

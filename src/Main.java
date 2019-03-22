@@ -16,6 +16,7 @@ public class Main {
   public static ArrayList<String> leftPart = new ArrayList<>();
   public static ArrayList<String> rightPart = new ArrayList<>();
   public static Stack<String> table = new Stack<>();
+  public static Stack<String> tableRight = new Stack<>();
 //  public static boolean[] beingInThisRaw;
 
   public static void outputRes() {
@@ -60,8 +61,18 @@ public class Main {
 
     for (int i = 0; i < leftPart.size(); i++) {
       table.push(Algo.parse(leftPart.get(i)).toString());
+      tableRight.push(Algo.parse(rightPart.get(i)).toString());
+      System.out.println("table = " + table.get(i));
+      System.out.println("tableRight = " + tableRight.get(i));
+
     }
 
+//    try {
+//      Parser.solve();
+//    } catch (IOException ex) {
+//      System.out.println(ex.getMessage());
+//      Parser.usage(formatter, options);
+//    }
 
     System.out.println("End!");
   }
