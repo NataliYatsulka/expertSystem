@@ -16,7 +16,7 @@ public class Main {
   public static ArrayList<String> leftPart = new ArrayList<>();
   public static ArrayList<String> rightPart = new ArrayList<>();
   public static Stack<String> table = new Stack<>();
-  public static boolean[] beingInThisRaw;
+//  public static boolean[] beingInThisRaw;
 
   public static void outputRes() {
     System.out.println("\u001B[32m" + "The Result is next: " + "\u001B[0m");

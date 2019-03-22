@@ -49,7 +49,7 @@ public class Parser {
         row = row + re;
       }
       list.set(i, row);
-      System.out.println("1 " + list.get(i));
+//      System.out.println("1 " + list.get(i));
     }
   }
 
@@ -76,8 +76,8 @@ public class Parser {
       }
       countRaw = i;
     }
-    Main.beingInThisRaw = new boolean[++countRaw];
-    System.out.println("booleanMass               = " + Main.beingInThisRaw.toString());
+//    Main.beingInThisRaw = new boolean[++countRaw];
+//    System.out.println("booleanMass   = " + Main.beingInThisRaw);
     System.out.println(list);
     System.out.println("countRaw = " + ++countRaw);
     System.out.println(Main.facts + "     " + Main.queries);
@@ -129,19 +129,14 @@ public class Parser {
   }
 
   public static boolean checkFile(List<String> list) {
-    List<Structure> structures = new ArrayList<Structure>();
+    List<Structure> structures = new ArrayList<>();
     for (int i = 0; i < list.size(); i++) {
       String[] tmp = list.get(i).split("<=>");
       if (list.get(i).matches(".+<=>.+")) {
-        structures.add(new Structure(tmp[0], tmp[1], true));
-//        Main.leftPart.add(tmp[0]);
-//        Main.rightPart.add(tmp[1]);
-        System.out.println("ppp = " + structures.toString());
+        structures.add(new Structure(tmp[0], tmp[1], true, false));
       } else if (list.get(i).matches(".+=>.+")) {
         tmp = list.get(i).split("=>");
-        structures.add(new Structure(tmp[0], tmp[1], false));
-//        Main.leftPart.add(tmp[0]);
-//        Main.rightPart.add(tmp[1]);
+        structures.add(new Structure(tmp[0], tmp[1], false, false));
       } else
         Message.exception("ERROR:  One of the line have bad initialization in row  " + list.get(i));
       if ((StringUtils.countMatches(tmp[0], "(") != StringUtils.countMatches(tmp[0], ")")) ||
