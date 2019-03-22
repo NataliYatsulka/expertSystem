@@ -49,13 +49,14 @@ public class Parser {
         row = row + re;
       }
       list.set(i, row);
-      System.out.println(list.get(i));
+      System.out.println("1 " + list.get(i));
     }
   }
 
 
   public static void checkFileOnFactQueries(List<String> list) {
     int count = 0;
+    int countRaw = 0;
     for (int i = 0; i < list.size(); i++) {
       if (list.get(i).matches("=[A-Z]+")) {
         String[] s = list.get(i).split("=");
@@ -73,8 +74,12 @@ public class Parser {
         i--;
         count++;
       }
+      countRaw = i;
     }
+    Main.beingInThisRaw = new boolean[++countRaw];
+    System.out.println("booleanMass               = " + Main.beingInThisRaw.toString());
     System.out.println(list);
+    System.out.println("countRaw = " + ++countRaw);
     System.out.println(Main.facts + "     " + Main.queries);
     if (count != 2)
       Message.exception("ERROR:  more than one time = or ?");
@@ -117,22 +122,26 @@ public class Parser {
     }
   }
 
-  public static void addFactsToMap(){
-    for (int i = 0; i < Main.facts.size(); i++){
+  public static void addFactsToMap() {
+    for (int i = 0; i < Main.facts.size(); i++) {
       Main.mapOfFacts.put(Main.facts.get(i), true);
     }
   }
 
   public static boolean checkFile(List<String> list) {
+    List<Structure> structures = new ArrayList<Structure>();
     for (int i = 0; i < list.size(); i++) {
       String[] tmp = list.get(i).split("<=>");
       if (list.get(i).matches(".+<=>.+")) {
-        Main.leftPart.add(tmp[0]);
-        Main.rightPart.add(tmp[1]);
+        structures.add(new Structure(tmp[0], tmp[1], true));
+//        Main.leftPart.add(tmp[0]);
+//        Main.rightPart.add(tmp[1]);
+        System.out.println("ppp = " + structures.toString());
       } else if (list.get(i).matches(".+=>.+")) {
         tmp = list.get(i).split("=>");
-        Main.leftPart.add(tmp[0]);
-        Main.rightPart.add(tmp[1]);
+        structures.add(new Structure(tmp[0], tmp[1], false));
+//        Main.leftPart.add(tmp[0]);
+//        Main.rightPart.add(tmp[1]);
       } else
         Message.exception("ERROR:  One of the line have bad initialization in row  " + list.get(i));
       if ((StringUtils.countMatches(tmp[0], "(") != StringUtils.countMatches(tmp[0], ")")) ||
@@ -141,13 +150,20 @@ public class Parser {
 //      if (tmp[0].matches("([A-Z][A-Z]+[+|^][+|^]+[A-Z][A-Z]+)+"))
 //        Message.exception("ERROR:  Bad row " + i);
     }
-    System.out.println(Main.leftPart);
-    System.out.println(Main.rightPart);
+//    System.out.println(Main.leftPart);
+//    System.out.println(Main.rightPart);
     checkLeftRightSiteOfRow(Main.leftPart);
     checkLeftRightSiteOfRow(Main.rightPart);
     addFactsToMap();
     System.out.println(Main.mapOfFacts);
-
+    System.out.println(Main.facts);
+    for (int z = 0; z < structures.size(); z++) {
+      System.out.println("qqq    = " + structures.get(z).toString());
+    }
+//    System.out.println(structures.toString());
+//    for (Structure s: structures) {
+//      System.out.println(s[5]);
+//    }
     return true;
   }
 

@@ -29,8 +29,8 @@ public class Algo {
   }
 
 
-  public static List<String> parse(String infix) {
-    List<String> postfix = new ArrayList<String>();
+  public static Stack<String> parse(String infix) {
+    Stack<String> postfix = new Stack<>();
     Deque<String> stack = new ArrayDeque<String>();
     StringTokenizer tokenizer = new StringTokenizer(infix, delimiters, true);
     String prev = "";
@@ -69,7 +69,10 @@ public class Algo {
     return postfix;
   }
 
-  public static ArrayList<String> polishNotation(ArrayList<String> list) {
+  public static ArrayList<String> solve(ArrayList<String> list) {
+    Stack<String> stack = new Stack<>();
+//    for ()
+
 
     return list;
   }
