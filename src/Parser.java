@@ -102,7 +102,7 @@ public class Parser {
         char prev = c;
 
         if (Character.isLetter(prev))
-          Main.mapOfFacts.put(prev, null);
+          Main.mapOfFacts.put(prev, false);
 
         if (j == 0 && left.get(i).length() == 1) {
           if (!Character.isLetter(prev))
@@ -126,7 +126,7 @@ public class Parser {
   }
 
   public static void addFactsToMap() {
-    for (int i = 0; i < Main.facts.size(); i++) {
+      for (int i = 0; i < Main.facts.size(); i++) {
       Main.mapOfFacts.put(Main.facts.get(i), true);
     }
   }
@@ -156,23 +156,75 @@ public class Parser {
     for (int z = 0; z < structures.size(); z++) {
       System.out.println("qqq    = " + structures.get(z).toString());
     }
-    try {
-      Parser.bc(structures);
-    } catch (IOException ex) {
-      System.out.println(ex.getMessage());
-      Message.exception("OPPSSS...");
-    }
+
+//    try {
+//      Parser.bc();
+//    } catch (IOException ex) {
+ //     System.out.println(ex.getMessage());
+     // Message.exception("OPPSSS...");
+   // }
 
     return true;
   }
 
-  public static void bc(List<Structure> structures) throws IOException {
-    Stack<Boolean> stack = new Stack<>();
+  public static Integer[] findAllRulles(int idexQuery){
+      Integer[] mas = new Integer[Main.countRaw];
+      for (int i = 0; i < Main.countRaw; i++){
+          if (Main.tableGrid[i][idexQuery] == 2) {
+              mas[i] = i;
+          }
+      }
+      return mas;
+  }
+
+    public static Integer[] findAllCondition(int idexQuery){
+        Integer[] mas = new Integer[Main.countRaw];
+        for (int i = 0; i < Main.countRaw; i++){
+            if (Main.tableGrid[i][idexQuery] == 1) {
+                mas[i] = i;
+            }
+        }
+        return mas;
+    }
+
+//    public static ArrayList<Integer> findAllCondition(int idexQuery){
+//        ArrayList<Integer> mas = new ArrayList<>();
+//        for (int i = 0; i < Main.countRaw; i++){
+//            if (Main.tableGrid[i][idexQuery] == 1) {
+//                mas.add(i);
+//            }
+//        }
+//        return mas;
+//    }
+
+  public static void bc(char query) {// throws IOException {
+//    Stack<Boolean> stack = new Stack<>();
 //    while (!Main.table.isEmpty()) {
 //      Character c;
 //      if (Main.facts.contains(c)) {
 //        stack.add(true);
 //      }
 //    }
+      Integer[] masQuery;// = new ArrayList<>();
+      Integer[] masCondit;
+//      for (Character query: Main.queries){
+          if (!Main.facts.contains(query)){
+              System.out.println("\u001B[33m" + "Querie to evaluete: " + query + "\u001B[0m");
+              int indexQuery = query - 'A';
+              masQuery = findAllRulles(indexQuery);
+              if (masQuery.length < 1){
+                  Main.mapOfFacts.put(query, false);
+              }
+              for (int j = 0; j < masQuery.length; j++){
+                  masCondit = findAllCondition(masQuery[j]);
+                  for (int k = 0; k < masCondit.length; k++){
+                      bc(masCondit[k] - 'A');
+                  }
+
+
+
+              }
+          }
+//      }
   }
 }

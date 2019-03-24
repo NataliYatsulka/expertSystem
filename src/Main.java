@@ -19,6 +19,7 @@ public class Main {
   public static Stack<String> table = new Stack<>();
   public static Stack<String> tableRight = new Stack<>();
   public static int countRaw;
+  public static Integer[][] tableGrid;
 //  public static boolean[] beingInThisRaw;
 
   public static void outputRes() {
@@ -74,7 +75,7 @@ facts.contains(queries);
 //      }
       System.out.println(mapOfWords.get('D'));
 
-    Integer[][] tableGrid = new Integer[Main.countRaw][26];
+    tableGrid = new Integer[Main.countRaw][26];
       System.out.println("leftPart = " + leftPart);
 
 //    char - 'A'
@@ -91,13 +92,13 @@ facts.contains(queries);
         }
     }
 
+    //delete
     for (int i = 0; i < Main.countRaw; i++)
     {
-        System.out.println();
-
         for (int j = 0; j < 26; j++){
             System.out.print(String.format("%5d", tableGrid[i][j]));
         }
+        System.out.println();
     }
 
 //      System.out.println("tableGrid = " + Arrays.deepToString(tableGrid));
@@ -108,7 +109,9 @@ facts.contains(queries);
 //      System.out.println(ex.getMessage());
 //      Parser.usage(formatter, options);
 //    }
-
+      for (Character query: queries) {
+          Parser.bc(query);
+      }
     System.out.println("End!");
   }
 }
