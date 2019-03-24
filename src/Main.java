@@ -11,12 +11,14 @@ public class Main {
 //    public static String[] queries = new String[32];
 
   public static HashMap<Character, Boolean> mapOfFacts = new HashMap<Character, Boolean>();
+  public static HashMap<Character, Integer> mapOfWords = new HashMap<Character, Integer>();
   public static ArrayList<Character> facts = new ArrayList<>();
   public static ArrayList<Character> queries = new ArrayList<>();
   public static ArrayList<String> leftPart = new ArrayList<>();
   public static ArrayList<String> rightPart = new ArrayList<>();
   public static Stack<String> table = new Stack<>();
   public static Stack<String> tableRight = new Stack<>();
+  public static int countRaw;
 //  public static boolean[] beingInThisRaw;
 
   public static void outputRes() {
@@ -32,7 +34,7 @@ public class Main {
     List<String> list;
 
     HelpFormatter formatter = new HelpFormatter();
-
+facts.contains(queries);
     try {
       if (args.length < 2)
         Parser.usage(formatter, options);
@@ -66,6 +68,39 @@ public class Main {
       System.out.println("tableRight = " + tableRight.get(i));
 
     }
+
+//      for (int i = 'A'; i <= 'Z'; i++) {
+//          mapOfWords.put((char)i, i - 'A');
+//      }
+      System.out.println(mapOfWords.get('D'));
+
+    Integer[][] tableGrid = new Integer[Main.countRaw][26];
+      System.out.println("leftPart = " + leftPart);
+
+//    char - 'A'
+
+    for (Map.Entry<Character, Boolean> oneEntry : mapOfFacts.entrySet()){
+        for (int j = 0; j < countRaw; j++){
+            tableGrid[j][(oneEntry.getKey() - 'A')] = 0;
+            if ((leftPart.get(j)).indexOf(oneEntry.getKey()) >= 0){
+                tableGrid[j][(oneEntry.getKey() - 'A')] = 1;
+            }
+            if ((rightPart.get(j)).indexOf(oneEntry.getKey()) >= 0){
+                tableGrid[j][(oneEntry.getKey() - 'A')] = 2;
+            }
+        }
+    }
+
+    for (int i = 0; i < Main.countRaw; i++)
+    {
+        System.out.println();
+
+        for (int j = 0; j < 26; j++){
+            System.out.print(String.format("%5d", tableGrid[i][j]));
+        }
+    }
+
+//      System.out.println("tableGrid = " + Arrays.deepToString(tableGrid));
 
 //    try {
 //      Parser.solve();

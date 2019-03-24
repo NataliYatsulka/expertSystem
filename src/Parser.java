@@ -57,7 +57,7 @@ public class Parser {
 
   public static void checkFileOnFactQueries(List<String> list) {
     int count = 0;
-    int countRaw = 0;
+//    int countRaw = 0;
     for (int i = 0; i < list.size(); i++) {
       if (list.get(i).matches("=[A-Z]+")) {
         String[] s = list.get(i).split("=");
@@ -75,12 +75,14 @@ public class Parser {
         i--;
         count++;
       }
-      countRaw = i;
+      Main.countRaw = i;
     }
+    Main.countRaw++;
 //    Main.beingInThisRaw = new boolean[++countRaw];
 //    System.out.println("booleanMass   = " + Main.beingInThisRaw);
-    System.out.println(list);
-    System.out.println("countRaw = " + ++countRaw);
+    System.out.println("ooo =" + list);
+//    Main.countRaw = countRaw;
+    System.out.println("Main.countRaw = " + Main.countRaw);
     System.out.println(Main.facts + "     " + Main.queries);
     if (count != 2)
       Message.exception("ERROR:  more than one time = or ?");
@@ -149,8 +151,8 @@ public class Parser {
     checkLeftRightSiteOfRow(Main.leftPart);
     checkLeftRightSiteOfRow(Main.rightPart);
     addFactsToMap();
-    System.out.println(Main.mapOfFacts);
-    System.out.println(Main.facts);
+    System.out.println("mapOfFacts = " + Main.mapOfFacts);
+    System.out.println("facts =" + Main.facts);
     for (int z = 0; z < structures.size(); z++) {
       System.out.println("qqq    = " + structures.get(z).toString());
     }
@@ -166,11 +168,11 @@ public class Parser {
 
   public static void bc(List<Structure> structures) throws IOException {
     Stack<Boolean> stack = new Stack<>();
-    while (!Main.table.isEmpty()) {
-      Character c;
-      if (Main.facts.contains(c)) {
-        stack.add(true);
-      }
-    }
+//    while (!Main.table.isEmpty()) {
+//      Character c;
+//      if (Main.facts.contains(c)) {
+//        stack.add(true);
+//      }
+//    }
   }
 }
