@@ -179,6 +179,16 @@ public class Parser {
         return mas;
     }
 
+    public static void solveRaw(int j) {
+        String raw = Main.table.get(j);
+        for (int i = 0; i < raw.length(); i++) {
+            if (raw.indexOf(i) != '+' && raw.indexOf(i) != '^' && raw.indexOf(i) != '|' && raw.indexOf(i) != '!') {
+//                if (Main.facts.contains(raw.indexOf(i)))
+                    ;
+            }
+        }
+    }
+
     public static void bc(char query) {// throws IOException {
         ArrayList<Integer> masQuery = new ArrayList<>();
         ArrayList<Integer> masCondit = new ArrayList<>();
@@ -197,6 +207,7 @@ public class Parser {
                 for (int k = 0; k < masCondit.size(); k++) {
                     bc((char) (masCondit.get(k) + 'A'));
                 }
+                solveRaw(masQuery.get(j));
             }
         }
     }
