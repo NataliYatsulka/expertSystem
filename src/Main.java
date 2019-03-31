@@ -14,8 +14,9 @@ public class Main {
     public static ArrayList<Character> queries = new ArrayList<>();
     public static ArrayList<String> leftPart = new ArrayList<>();
     public static ArrayList<String> rightPart = new ArrayList<>();
-    public static Stack<String> table = new Stack<>();
-    public static Stack<String> tableRight = new Stack<>();
+    public static LinkedList<String> table = new LinkedList<>();
+    public static LinkedList<LinkedList<String>> tableList = new LinkedList<>();
+    public static List<String> tableRight = new LinkedList<>();
     public static int countRaw;
     public static Integer[][] tableGrid;
 //  public static boolean[] beingInThisRaw;
@@ -38,10 +39,10 @@ public class Main {
             for (int j = 0; j < countRaw; j++) {
                 tableGrid[j][(oneEntry.getKey() - 'A')] = 0;
                 if ((leftPart.get(j)).indexOf(oneEntry.getKey()) >= 0) {
-                    tableGrid[j][(oneEntry.getKey() - 'A')] = 1;
+                    tableGrid[j][(oneEntry.getKey() - 'A')] |= 0b0001;
                 }
                 if ((rightPart.get(j)).indexOf(oneEntry.getKey()) >= 0) {
-                    tableGrid[j][(oneEntry.getKey() - 'A')] = 2;
+                    tableGrid[j][(oneEntry.getKey() - 'A')] |= 0b0010;
                 }
             }
         }
@@ -93,8 +94,10 @@ public class Main {
         }
 
         for (int i = 0; i < leftPart.size(); i++) {
-            table.push(Algo.parse(leftPart.get(i)).toString());
-            tableRight.push(Algo.parse(rightPart.get(i)).toString());
+            LinkedList<String> tmp = Algo.parse(leftPart.get(i));
+            table.add(tmp.toString());
+            tableList.add(tmp);
+            tableRight.add(Algo.parse(rightPart.get(i)).toString());
             System.out.println("table = " + table.get(i));
             System.out.println("tableRight = " + tableRight.get(i));
 
@@ -136,59 +139,58 @@ public class Main {
         }
         outputRes();
 
-        if (goal != null){
-            try {
-                for (int l = Main.queries.size() - 1; l >= 0; l--){
-                    Main.queries.remove(l);
+        if (goal != null || fact != null) {
+            if (goal != null) {
+                try {
+                    for (int l = Main.queries.size() - 1; l >= 0; l--) {
+                        Main.queries.remove(l);
+                    }
+                    System.out.println("IS= " + Main.queries);
+                    System.out.println("New goal(s) added");
+                    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+                    System.out.println("Enter new goal(s), which you want to find");
+                    String string = br.readLine();
+                    System.out.println("Read string from input: " + string);
+                    if (string.matches("[A-Z]+")) {
+                        for (int k = 0; k < string.length(); k++)
+                            Main.queries.add(string.charAt(k));
+                        outputRes();
+                    } else Message.exception("ERROR:  Bad bonus input");
+                } catch (IOException ex) {
+                    System.out.println(ex.getMessage());
+                    Parser.usage(formatter, options);
                 }
-                System.out.println("IS= " + Main.queries);
-                System.out.println("New goal(s) added");
-                BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-                System.out.println("Enter new goal(s), which you want to find");
-                String string = br.readLine();
-                System.out.println("Read string from input: " + string);
-                if (string.matches("[A-Z]+")){
-                    for (int k = 0; k < string.length(); k++)
-                        Main.queries.add(string.charAt(k));
-                    outputRes();
-                }
-                else Message.exception("ERROR:  Bad bonus input");
-            }catch (IOException ex){
-                System.out.println(ex.getMessage());
-                Parser.usage(formatter, options);
             }
-        }
 
-        if (fact != null){
-            try {
-                for (int l = Main.facts.size() - 1; l >= 0; l--){
-                    Main.facts.remove(l);
+            if (fact != null) {
+                try {
+                    for (int l = Main.facts.size() - 1; l >= 0; l--) {
+                        Main.facts.remove(l);
+                    }
+                    System.out.println("facts= " + Main.facts);
+                    System.out.println("New fact(s) added");
+                    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+                    System.out.println("Enter new fact(s), which you want to find");
+                    String string = br.readLine();
+                    System.out.println("Read string from input: " + string);
+                    if (string.matches("[A-Z]+")) {
+                        for (int k = 0; k < string.length(); k++)
+                            Main.facts.add(string.charAt(k));
+                    } else Message.exception("ERROR:  Bad bonus input");
+                    Parser.addFactsToMap();
+                    System.out.println("bonus facts = " + facts);
+                    setTableGrid();
+                } catch (IOException ex) {
+                    System.out.println(ex.getMessage());
+                    Parser.usage(formatter, options);
                 }
-                System.out.println("facts= " + Main.facts);
-                System.out.println("New fact(s) added");
-                BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-                System.out.println("Enter new fact(s), which you want to find");
-                String string = br.readLine();
-                System.out.println("Read string from input: " + string);
-                if (string.matches("[A-Z]+")){
-                    for (int k = 0; k < string.length(); k++)
-                        Main.facts.add(string.charAt(k));
-                }
-                else Message.exception("ERROR:  Bad bonus input");
-                Parser.addFactsToMap();
-                System.out.println("bonus facts = " + facts);
-                setTableGrid();
             }
-            catch (IOException ex){
-                System.out.println(ex.getMessage());
-                Parser.usage(formatter, options);
-            }
-        }
 
-        for (Character query : queries) {
-            Parser.bc(query);
+            for (Character query : queries) {
+                Parser.bc(query);
+            }
+            outputRes();
         }
-        outputRes();
 
         System.out.println("End!");
     }

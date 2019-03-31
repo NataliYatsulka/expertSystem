@@ -31,8 +31,8 @@ public class Algo {
     }
 
 
-    public static Stack<String> parse(String infix) {
-        Stack<String> postfix = new Stack<>();
+    public static LinkedList<String> parse(String infix) {
+        LinkedList<String> postfix = new LinkedList<>();
         Deque<String> stack = new ArrayDeque<String>();
         StringTokenizer tokenizer = new StringTokenizer(infix, delimiters, true);
         String prev = "";
@@ -71,12 +71,14 @@ public class Algo {
         return postfix;
     }
 
-    public static ArrayList<String> solve(ArrayList<String> list) {
-        Stack<String> stack = new Stack<>();
-//    for ()
-
-
-        return list;
-    }
+//    public static ArrayList<String> solve(ArrayList<String> list) {
+////        Stack<String> stack = new Stack<>();
+//        List<String> stack = new LinkedList<>();
+//
+////    for ()
+//
+//
+//        return list;
+//    }
 }
 

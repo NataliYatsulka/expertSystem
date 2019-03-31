@@ -16,6 +16,7 @@ A + A <=> !C # A and B if and only if not C
 !((!A + !G) | !Y ^ (I ^ Q))=> (J)
 !(((A))) => W
 E+(L + Z) => F
+A=>A
 
 
 =ABG

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Parser {
@@ -170,7 +171,7 @@ public class Parser {
     public static ArrayList<Integer> findAllQuery(int indexQuery) {
         ArrayList<Integer> mas = new ArrayList<>();
         for (int i = 0; i < Main.countRaw; i++) {
-            if (Main.tableGrid[i][indexQuery] == 2) {
+            if ((Main.tableGrid[i][indexQuery] & 0b0010) == 2) {
                 mas.add(i);
             }
         }
@@ -180,21 +181,81 @@ public class Parser {
     public static ArrayList<Integer> findAllCondition(int indexQuery) {
         ArrayList<Integer> mas = new ArrayList<>();
         for (int i = 0; i < 26; i++) {
-            if (Main.tableGrid[indexQuery][i] == 1) {
+            if ((Main.tableGrid[indexQuery][i] & 0b001) == 1) {
                 mas.add(i);
             }
         }
         return mas;
     }
 
-    public static void solveRaw(int j) {
-        String raw = Main.table.get(j);
-        for (int i = 0; i < raw.length(); i++) {
-            if (raw.indexOf(i) != '+' && raw.indexOf(i) != '^' && raw.indexOf(i) != '|' && raw.indexOf(i) != '!') {
-//                if (Main.facts.contains(raw.indexOf(i)))
-                    ;
+    public static boolean isInLeft(char letter) {
+        if (letter >= 'A' && letter <= 'Z') {
+            System.out.println("Wrong letter to search!");
+            System.exit(-1);
+        }
+        for (int i = 0; i < 26; i++) {
+            if ((Main.tableGrid[letter - 'A'][i] & 0b001) == 1) {
+                return true;
             }
         }
+        return false;
+    }
+
+    public static boolean isInRight(char letter) {
+        if (letter >= 'A' && letter <= 'Z') {
+            System.out.println("Wrong letter to search!");
+            System.exit(-1);
+        }
+        for (int i = 0; i < 26; i++) {
+            if ((Main.tableGrid[letter - 'A'][i] & 0b010) == 2) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isInBoth(char letter) {
+        if (letter >= 'A' && letter <= 'Z') {
+            System.out.println("Wrong letter to search!");
+            System.exit(-1);
+        }
+        for (int i = 0; i < 26; i++) {
+            if ((Main.tableGrid[letter - 'A'][i] & 0b011) == 3) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void solveRaw(int j) {
+        List<String> raw = Main.tableList.get(j);
+        System.out.println("\nNow:" + raw.toString());
+        for (int i = 0; i < raw.size(); i++) {
+            if (raw.get(i).equals("+") || raw.get(i).equals("^") || raw.get(i).equals("|")) {//|| raw.get(i).startsWith("!")) {
+                if (i >= 2) {
+                    System.out.println("I need to: " + raw.get(i - 2) + raw.get(i) + raw.get(i - 1));
+                    if (raw.get(i - 2).length() == 1) {
+                        if (Main.facts.contains(raw.get(i - 2).charAt(0))) {
+                            System.out.println(raw.get(i - 2).charAt(0) + " is  in facts and TRUE");
+                        } else {
+                            System.out.println(raw.get(i - 2).charAt(0) + " is not in facts");
+                        }
+                    }
+
+                    if (raw.get(i - 1).length() == 1) {
+                        if (Main.facts.contains(raw.get(i - 1).charAt(0))) {
+                            System.out.println(raw.get(i - 1).charAt(0) + " is  in facts and TRUE");
+                        } else {
+                            System.out.println(raw.get(i - 1).charAt(0) + " is not in facts");
+                        }
+                    }
+
+                }
+            }
+        }
+
+        System.out.println();
+
     }
 
     public static void bc(char query) {// throws IOException {
