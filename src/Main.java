@@ -1,8 +1,6 @@
 import org.apache.commons.cli.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class Main {
@@ -25,12 +23,42 @@ public class Main {
     public static void outputRes() {
         System.out.println("\u001B[32m" + "The Result is next: " + "\u001B[0m");
         for (int i = 0; i < queries.size(); i++) {
-            System.out.println("\u001B[32m" + queries.get(i) + " = " + mapOfFacts.get(queries.get(i)) + "\u001B[0m");
+            if (mapOfFacts.get(queries.get(i)) == null) {
+                System.out.println("\u001B[32m" + queries.get(i) + " = " + false + "\u001B[0m");}
+                else
+                System.out.println("\u001B[32m" + queries.get(i) + " = " + mapOfFacts.get(queries.get(i)) + "\u001B[0m");
+        }
+    }
+
+    public static void setTableGrid(){
+        tableGrid = new Integer[Main.countRaw][26];
+        System.out.println("leftPart = " + leftPart);
+
+        for (Map.Entry<Character, Boolean> oneEntry : mapOfFacts.entrySet()) {
+            for (int j = 0; j < countRaw; j++) {
+                tableGrid[j][(oneEntry.getKey() - 'A')] = 0;
+                if ((leftPart.get(j)).indexOf(oneEntry.getKey()) >= 0) {
+                    tableGrid[j][(oneEntry.getKey() - 'A')] = 1;
+                }
+                if ((rightPart.get(j)).indexOf(oneEntry.getKey()) >= 0) {
+                    tableGrid[j][(oneEntry.getKey() - 'A')] = 2;
+                }
+            }
+        }
+
+        for (int i = 0; i < Main.countRaw; i++) {
+            for (int j = 0; j < 26; j++) {
+                if (tableGrid[i][j] == null)
+                    tableGrid[i][j] = 0;
+            }
         }
     }
 
     public static void main(String[] args) {
         String path = null;
+        String goal = null;
+        String fact = null;
+
         Options options = Parser.parsingInputArgs(args);
         List<String> list;
 
@@ -41,6 +69,9 @@ public class Main {
                 Parser.usage(formatter, options);
             CommandLine cmd = new BasicParser().parse(options, args);
             path = cmd.getOptionValue("path");
+            goal = cmd.getOptionValue("goals");
+            fact = cmd.getOptionValue("facts");
+
             System.out.println("path = " + path);
             if (path != null) {
                 File f = new File(path);
@@ -69,27 +100,28 @@ public class Main {
 
         }
 
-        tableGrid = new Integer[Main.countRaw][26];
-        System.out.println("leftPart = " + leftPart);
-
-        for (Map.Entry<Character, Boolean> oneEntry : mapOfFacts.entrySet()) {
-            for (int j = 0; j < countRaw; j++) {
-                tableGrid[j][(oneEntry.getKey() - 'A')] = 0;
-                if ((leftPart.get(j)).indexOf(oneEntry.getKey()) >= 0) {
-                    tableGrid[j][(oneEntry.getKey() - 'A')] = 1;
-                }
-                if ((rightPart.get(j)).indexOf(oneEntry.getKey()) >= 0) {
-                    tableGrid[j][(oneEntry.getKey() - 'A')] = 2;
-                }
-            }
-        }
-
-        for (int i = 0; i < Main.countRaw; i++) {
-            for (int j = 0; j < 26; j++) {
-                if (tableGrid[i][j] == null)
-                    tableGrid[i][j] = 0;
-            }
-        }
+//        tableGrid = new Integer[Main.countRaw][26];
+//        System.out.println("leftPart = " + leftPart);
+//
+//        for (Map.Entry<Character, Boolean> oneEntry : mapOfFacts.entrySet()) {
+//            for (int j = 0; j < countRaw; j++) {
+//                tableGrid[j][(oneEntry.getKey() - 'A')] = 0;
+//                if ((leftPart.get(j)).indexOf(oneEntry.getKey()) >= 0) {
+//                    tableGrid[j][(oneEntry.getKey() - 'A')] = 1;
+//                }
+//                if ((rightPart.get(j)).indexOf(oneEntry.getKey()) >= 0) {
+//                    tableGrid[j][(oneEntry.getKey() - 'A')] = 2;
+//                }
+//            }
+//        }
+//
+//        for (int i = 0; i < Main.countRaw; i++) {
+//            for (int j = 0; j < 26; j++) {
+//                if (tableGrid[i][j] == null)
+//                    tableGrid[i][j] = 0;
+//            }
+//        }
+        setTableGrid();
 
         //delete
         for (int i = 0; i < Main.countRaw; i++) {
@@ -103,6 +135,61 @@ public class Main {
             Parser.bc(query);
         }
         outputRes();
+
+        if (goal != null){
+            try {
+                for (int l = Main.queries.size() - 1; l >= 0; l--){
+                    Main.queries.remove(l);
+                }
+                System.out.println("IS= " + Main.queries);
+                System.out.println("New goal(s) added");
+                BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+                System.out.println("Enter new goal(s), which you want to find");
+                String string = br.readLine();
+                System.out.println("Read string from input: " + string);
+                if (string.matches("[A-Z]+")){
+                    for (int k = 0; k < string.length(); k++)
+                        Main.queries.add(string.charAt(k));
+                    outputRes();
+                }
+                else Message.exception("ERROR:  Bad bonus input");
+            }catch (IOException ex){
+                System.out.println(ex.getMessage());
+                Parser.usage(formatter, options);
+            }
+        }
+
+        if (fact != null){
+            try {
+                for (int l = Main.facts.size() - 1; l >= 0; l--){
+                    Main.facts.remove(l);
+                }
+                System.out.println("facts= " + Main.facts);
+                System.out.println("New fact(s) added");
+                BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+                System.out.println("Enter new fact(s), which you want to find");
+                String string = br.readLine();
+                System.out.println("Read string from input: " + string);
+                if (string.matches("[A-Z]+")){
+                    for (int k = 0; k < string.length(); k++)
+                        Main.facts.add(string.charAt(k));
+                }
+                else Message.exception("ERROR:  Bad bonus input");
+                Parser.addFactsToMap();
+                System.out.println("bonus facts = " + facts);
+                setTableGrid();
+            }
+            catch (IOException ex){
+                System.out.println(ex.getMessage());
+                Parser.usage(formatter, options);
+            }
+        }
+
+        for (Character query : queries) {
+            Parser.bc(query);
+        }
+        outputRes();
+
         System.out.println("End!");
     }
 }

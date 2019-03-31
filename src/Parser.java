@@ -19,6 +19,14 @@ public class Parser {
         path.setRequired(false);
         options.addOption(path);
 
+        Option goals = new Option("g", "goals", true, "new goals you want to find");
+        goals.setRequired(false);
+        options.addOption(goals);
+
+        Option facts = new Option("f", "facts", true, "new facts");
+        facts.setRequired(false);
+        options.addOption(facts);
+
         return options;
     }
 

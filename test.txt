@@ -15,6 +15,8 @@ A + B <=> C # A and B if and only if C
 A + A <=> !C # A and B if and only if not C
 !((!A + !G) | !Y ^ (I ^ Q))=> (J)
 !(((A))) => W
+E+(L + Z) => F
+
 
 =ABG
 # Initial facts : A, B and G are true. All others are false.
