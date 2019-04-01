@@ -216,8 +216,7 @@ public class Parser {
 
     public static boolean isInBoth(char letter) {
         if (letter >= 'A' && letter <= 'Z') {
-            System.out.println("Wrong letter to search!");
-            System.exit(-1);
+            Message.errorMsg("Wrong letter to search!");
         }
         for (int i = 0; i < 26; i++) {
             if ((Main.tableGrid[letter - 'A'][i] & 0b011) == 3) {
@@ -227,29 +226,108 @@ public class Parser {
         return false;
     }
 
+    public static boolean isInFacts(char letter){
+        if (letter <= 'A' && letter >= 'Z') {
+            Message.errorMsg("Wrong letter to search!");
+        }
+        if (Main.facts.contains(letter))
+            return true;
+        return false;
+    }
+
+    public static boolean isInFacts(String block){
+        if (block == null || block.length() > 2 || block.length() < 1)
+            return false;
+        if (block.length() == 1 && block.charAt(0) >= 'A' && block.charAt(0) <= 'Z')
+            return isInFacts(block.charAt(0));
+        if (block.length() == 2 && block.charAt(0) >= '!' && block.charAt(1) >= 'A' && block.charAt(1) <= 'Z')
+            return isInFacts(block.charAt(1));
+        Message.errorMsg("Wrong block to search in facts: " + block);
+        return false;
+    }
+
+    public static boolean getValueFromFacts(String block){
+        if (!(block == null || block.length() > 2 || block.length() < 1)) {
+            if (block.length() == 1 && block.charAt(0) >= 'A' && block.charAt(0) <= 'Z' && Main.facts.contains(block.charAt(0)))
+                return true;
+            if (block.length() == 2 && block.charAt(0) >= '!' && block.charAt(1) >= 'A' && block.charAt(1) <= 'Z' && Main.facts.contains(block.charAt(1)))
+                return false;
+        }
+        Message.errorMsg("Not in facts or Wrong block to get fact: " + block);
+        return false;
+    }
+
+    public static boolean isCorrect(String block){
+        if (block == null || block.length() > 2 || block.length() < 1)
+            return false;
+        if (block.length() == 1 && block.charAt(0) >= 'A' && block.charAt(0) <= 'Z')
+            return true;
+        if (block.length() == 2 && block.charAt(0) >= '!' && block.charAt(1) >= 'A' && block.charAt(1) <= 'Z')
+            return true;
+        Message.errorMsg("Incorrect block: " + block);
+        return false;
+    }
+
+    public static boolean isOperand(String block){
+        if (block != null && block.length() == 1
+                && (block.charAt(0) == '+' || block.charAt(0) == '^' || block.charAt(0) == '|')
+           )
+            return true;
+        return false;
+    }
+
     public static void solveRaw(int j) {
         List<String> raw = Main.tableList.get(j);
+        boolean result=false;
         System.out.println("\nNow:" + raw.toString());
         for (int i = 0; i < raw.size(); i++) {
-            if (raw.get(i).equals("+") || raw.get(i).equals("^") || raw.get(i).equals("|")) {//|| raw.get(i).startsWith("!")) {
-                if (i >= 2) {
+            if (isOperand(raw.get(i))) {
+                if (i >= 2) {//якщо зліва є два символи
+
                     System.out.println("I need to: " + raw.get(i - 2) + raw.get(i) + raw.get(i - 1));
-                    if (raw.get(i - 2).length() == 1) {
-                        if (Main.facts.contains(raw.get(i - 2).charAt(0))) {
-                            System.out.println(raw.get(i - 2).charAt(0) + " is  in facts and TRUE");
-                        } else {
-                            System.out.println(raw.get(i - 2).charAt(0) + " is not in facts");
-                        }
-                    }
+                    if (isCorrect(raw.get(i - 2)) && isCorrect(raw.get(i - 1))){
+                        boolean operandA=false;
+                        boolean operandB=false;
 
-                    if (raw.get(i - 1).length() == 1) {
-                        if (Main.facts.contains(raw.get(i - 1).charAt(0))) {
-                            System.out.println(raw.get(i - 1).charAt(0) + " is  in facts and TRUE");
+                        if (isInFacts(raw.get(i - 2))) {
+                            operandA = getValueFromFacts(raw.get(i - 2));
+                            System.out.println(raw.get(i - 2) + " is  in facts and is " + (operandA ?"TRUE":"FALSE"));
                         } else {
-                            System.out.println(raw.get(i - 1).charAt(0) + " is not in facts");
+                            System.out.println(raw.get(i - 2) + " is not in facts");
                         }
-                    }
 
+                        if (isInFacts(raw.get(i - 1))) {
+                            operandB = getValueFromFacts(raw.get(i - 1));
+                            System.out.println(raw.get(i - 1) + " is  in facts and is " + (operandB ?"TRUE":"FALSE"));
+                        } else {
+                            System.out.println(raw.get(i - 1) + " is not in facts");
+                        }
+
+                        switch (raw.get(i).charAt(0)){
+                            case '+'://AND &
+                                result = operandA && operandB;
+                                break;
+
+                            case '^'://XOR ^
+                                result = operandA ^ operandB;
+                                break;
+
+                            case '|'://OR |
+                                result = operandA || operandB;
+                                break;
+
+                            default:
+                                Message.errorMsg("Incorrect operand: " + raw.get(i));
+                                break;
+                        }
+
+                        if ( i >= 3 && raw.get(i-3).length() == 1 && raw.get(i-3).charAt(0) == '!')
+                            result = !result;
+                        Message.infoMsg("Result of calculation: " + (result ?"TRUE":"FALSE"));
+
+                    }
+                    else
+                        Message.errorMsg("One of operands is incorrect:\n" + raw.get(i - 2) + "\n" + raw.get(i - 1));
                 }
             }
         }
