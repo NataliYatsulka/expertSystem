@@ -236,7 +236,11 @@ public class Parser {
     }
 
     public static boolean isInFacts(String block){
-        if (block == null || block.length() > 2 || block.length() < 1)
+        if (block == null)
+            Message.errorMsg("ERROR: NULL was passed to isCorrect()!");
+        if (block.equals("true") || block.equals("false"))
+            return true;
+        if (block.length() > 2 || block.length() < 1)
             return false;
         if (block.length() == 1 && block.charAt(0) >= 'A' && block.charAt(0) <= 'Z')
             return isInFacts(block.charAt(0));
@@ -247,7 +251,13 @@ public class Parser {
     }
 
     public static boolean getValueFromFacts(String block){
-        if (!(block == null || block.length() > 2 || block.length() < 1)) {
+        if (block == null)
+            Message.errorMsg("ERROR: NULL was passed to getValueFromFacts()!");
+        if (block.equals("true"))
+            return true;
+        if (block.equals("false"))
+            return false;
+        if (!(block.length() > 2 || block.length() < 1)) {
             if (block.length() == 1 && block.charAt(0) >= 'A' && block.charAt(0) <= 'Z' && Main.facts.contains(block.charAt(0)))
                 return true;
             if (block.length() == 2 && block.charAt(0) >= '!' && block.charAt(1) >= 'A' && block.charAt(1) <= 'Z' && Main.facts.contains(block.charAt(1)))
@@ -258,7 +268,11 @@ public class Parser {
     }
 
     public static boolean isCorrect(String block){
-        if (block == null || block.length() > 2 || block.length() < 1)
+        if (block == null)
+            Message.errorMsg("ERROR: NULL was passed to isCorrect()!");
+        if (block.equals("true") || block.equals("false"))
+            return true;
+        if (block.length() > 2 || block.length() < 1)
             return false;
         if (block.length() == 1 && block.charAt(0) >= 'A' && block.charAt(0) <= 'Z')
             return true;
@@ -276,63 +290,98 @@ public class Parser {
         return false;
     }
 
-    public static void solveRaw(int j) {
-        List<String> raw = Main.tableList.get(j);
+    public static LinkedList<String> solveBlock(LinkedList<String> raw, int i){
         boolean result=false;
-        System.out.println("\nNow:" + raw.toString());
-        for (int i = 0; i < raw.size(); i++) {
-            if (isOperand(raw.get(i))) {
-                if (i >= 2) {//якщо зліва є два символи
+        System.out.println("\nI need to: " + raw.get(i - 2) + raw.get(i) + raw.get(i - 1));
+        if (isCorrect(raw.get(i - 2)) && isCorrect(raw.get(i - 1))){
 
-                    System.out.println("I need to: " + raw.get(i - 2) + raw.get(i) + raw.get(i - 1));
-                    if (isCorrect(raw.get(i - 2)) && isCorrect(raw.get(i - 1))){
-                        boolean operandA=false;
-                        boolean operandB=false;
+            boolean operandA=false;
+            boolean operandB=false;
 
-                        if (isInFacts(raw.get(i - 2))) {
-                            operandA = getValueFromFacts(raw.get(i - 2));
-                            System.out.println(raw.get(i - 2) + " is  in facts and is " + (operandA ?"TRUE":"FALSE"));
-                        } else {
-                            System.out.println(raw.get(i - 2) + " is not in facts");
-                        }
+            if (isInFacts(raw.get(i - 2))) {
+                operandA = getValueFromFacts(raw.get(i - 2));
+                System.out.println(raw.get(i - 2) + " is  in facts and is " + (operandA ?"TRUE":"FALSE"));
+            } else {
+                System.out.println(raw.get(i - 2) + " is not in facts");
+            }
 
-                        if (isInFacts(raw.get(i - 1))) {
-                            operandB = getValueFromFacts(raw.get(i - 1));
-                            System.out.println(raw.get(i - 1) + " is  in facts and is " + (operandB ?"TRUE":"FALSE"));
-                        } else {
-                            System.out.println(raw.get(i - 1) + " is not in facts");
-                        }
+            if (isInFacts(raw.get(i - 1))) {
+                operandB = getValueFromFacts(raw.get(i - 1));
+                System.out.println(raw.get(i - 1) + " is  in facts and is " + (operandB ?"TRUE":"FALSE"));
+            } else {
+                System.out.println(raw.get(i - 1) + " is not in facts");
+            }
 
-                        switch (raw.get(i).charAt(0)){
-                            case '+'://AND &
-                                result = operandA && operandB;
-                                break;
+            switch (raw.get(i).charAt(0)){
+                case '+'://AND &
+                    result = operandA && operandB;
+                    break;
 
-                            case '^'://XOR ^
-                                result = operandA ^ operandB;
-                                break;
+                case '^'://XOR ^
+                    result = operandA ^ operandB;
+                    break;
 
-                            case '|'://OR |
-                                result = operandA || operandB;
-                                break;
+                case '|'://OR |
+                    result = operandA || operandB;
+                    break;
 
-                            default:
-                                Message.errorMsg("Incorrect operand: " + raw.get(i));
-                                break;
-                        }
+                default:
+                    Message.errorMsg("Incorrect operand: " + raw.get(i));
+                    break;
+            }
 
-                        if ( i >= 3 && raw.get(i-3).length() == 1 && raw.get(i-3).charAt(0) == '!')
-                            result = !result;
-                        Message.infoMsg("Result of calculation: " + (result ?"TRUE":"FALSE"));
+            if ( i >= 3 && raw.get(i-3).length() == 1 && raw.get(i-3).charAt(0) == '!') {
+                result = !result;
+                raw.set(i, result?"true":"false");
+                raw.remove(i-1);
+                raw.remove(i-2);
+                raw.remove(i-3);
+            }
+            else
+            {
+                raw.set(i, result?"true":"false");
+                raw.remove(i-1);
+                raw.remove(i-2);
+            }
 
-                    }
-                    else
-                        Message.errorMsg("One of operands is incorrect:\n" + raw.get(i - 2) + "\n" + raw.get(i - 1));
+            Message.infoMsg("Result of calculation: " + (result ?"TRUE":"FALSE"));
+        }
+        else
+            Message.errorMsg("One of operands is incorrect:\n" + raw.get(i - 2) + "\n" + raw.get(i - 1));
+        return raw;
+    }
+
+    public static boolean solve(int j){
+        System.out.println("\nNow:" + Main.tableList.get(j).toString());
+        return solveRaw(Main.tableList.get(j));
+    }
+
+    public static boolean solveRaw(LinkedList<String> raw) {
+        System.out.println();
+        if (raw.size() >= 3) {
+            for (int i = 0; i < raw.size(); i++) {
+                if (isOperand(raw.get(i))) {
+                    if (i >= 2) {//якщо зліва є два символи
+                        raw = solveBlock(raw, i);
+                        System.out.println("Notation after solving block: " + raw.toString());
+                    } else
+                        break;
                 }
             }
+            return solveRaw(raw);
+        }else if (raw.size() == 1) {
+            Message.infoMsg("Lasted ONE:" + raw.toString());
+            if (raw.get(0).equals("true"))
+                return true;
+            else
+                return false;
+        }else if (raw.size() == 2){
+            Message.errorMsg("Lasted TWO:" + raw.toString());
+            return false;
+        }else {
+            Message.errorMsg("EROR: empty input in solweRaw()");
+            return false;
         }
-
-        System.out.println();
 
     }
 
@@ -354,7 +403,8 @@ public class Parser {
                 for (int k = 0; k < masCondit.size(); k++) {
                     bc((char) (masCondit.get(k) + 'A'));
                 }
-                solveRaw(masQuery.get(j));
+                Message.infoMsg("\nNik's magic result is: " + solve(masQuery.get(j)));
+//                solve(masQuery.get(j));
             }
         }
     }
