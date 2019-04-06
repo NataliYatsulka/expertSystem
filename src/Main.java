@@ -7,19 +7,22 @@ public class Main {
 //    public static String[] facts = new String[32];
 //    public static List<String> rules =  Arrays.asList("(", ")", "!", "+", "|", "^", "=>", "<=>");
 //    public static String[] queries = new String[32];
-
-    public static HashMap<Character, Boolean> mapOfFacts = new HashMap<Character, Boolean>();
+    public static HashMap<Character, Integer> mapOfFacts = new HashMap<Character, Integer>();
     public static HashMap<Character, Integer> mapOfWords = new HashMap<Character, Integer>();
     public static ArrayList<Character> facts = new ArrayList<>();
     public static ArrayList<Character> queries = new ArrayList<>();
     public static ArrayList<String> leftPart = new ArrayList<>();
     public static ArrayList<String> rightPart = new ArrayList<>();
     public static LinkedList<String> table = new LinkedList<>();
-    public static LinkedList<LinkedList<String>> tableList = new LinkedList<>();
+    public static LinkedList<LinkedList<String>> tableList = new LinkedList<>();//nik
     public static List<String> tableRight = new LinkedList<>();
     public static int countRaw;
     public static Integer[][] tableGrid;
 //  public static boolean[] beingInThisRaw;
+
+    public static final Integer UNDEFINED = -1;
+    public static final Integer FALSE = 0;
+    public static final Integer TRUE = 1;
 
     public static void outputRes() {
         System.out.println("\u001B[32m" + "The Result is next: " + "\u001B[0m");
@@ -35,7 +38,7 @@ public class Main {
         tableGrid = new Integer[Main.countRaw][26];
         System.out.println("leftPart = " + leftPart);
 
-        for (Map.Entry<Character, Boolean> oneEntry : mapOfFacts.entrySet()) {
+        for (Map.Entry<Character, Integer> oneEntry : mapOfFacts.entrySet()) {
             for (int j = 0; j < countRaw; j++) {
                 tableGrid[j][(oneEntry.getKey() - 'A')] = 0;
                 if ((leftPart.get(j)).indexOf(oneEntry.getKey()) >= 0) {

@@ -110,7 +110,7 @@ public class Parser {
                 char prev = c;
 
                 if (Character.isLetter(prev))
-                    Main.mapOfFacts.put(prev, false);
+                    Main.mapOfFacts.put(prev, Main.UNDEFINED);
 
                 if (j == 0 && left.get(i).length() == 1) {
                     if (!Character.isLetter(prev))
@@ -135,7 +135,7 @@ public class Parser {
 
     public static void addFactsToMap() {
         for (int i = 0; i < Main.facts.size(); i++) {
-            Main.mapOfFacts.put(Main.facts.get(i), true);
+            Main.mapOfFacts.put(Main.facts.get(i), Main.TRUE);
         }
     }
 
@@ -230,8 +230,20 @@ public class Parser {
         if (letter <= 'A' && letter >= 'Z') {
             Message.errorMsg("Wrong letter to search!");
         }
-        if (Main.facts.contains(letter))
+        if (Main.mapOfFacts.get(letter).equals(Main.TRUE))
             return true;
+        return false;
+    }
+
+    public static boolean isDefined(String block){
+        if (block == null)
+            Message.errorMsg("ERROR: NULL was passed to isUndefined()!");
+        if (block.equals("true") || block.equals("false"))
+            return true;
+        if (block.length() == 1 && block.charAt(0) >= 'A' && block.charAt(0) <= 'Z' && !(Main.mapOfFacts.get(block.charAt(0)).equals(Main.UNDEFINED)))
+            return isInFacts(block.charAt(0));
+        if (block.length() == 2 && block.charAt(0) >= '!' && block.charAt(1) >= 'A' && block.charAt(1) <= 'Z' && !(Main.mapOfFacts.get(block.charAt(1)).equals(Main.UNDEFINED)))
+            return isInFacts(block.charAt(1));
         return false;
     }
 
@@ -258,10 +270,10 @@ public class Parser {
         if (block.equals("false"))
             return false;
         if (!(block.length() > 2 || block.length() < 1)) {
-            if (block.length() == 1 && block.charAt(0) >= 'A' && block.charAt(0) <= 'Z' && Main.facts.contains(block.charAt(0)))
-                return true;
-            if (block.length() == 2 && block.charAt(0) >= '!' && block.charAt(1) >= 'A' && block.charAt(1) <= 'Z' && Main.facts.contains(block.charAt(1)))
-                return false;
+            if (block.length() == 1)
+                return isInFacts(block.charAt(0));
+            if (block.length() == 2 && block.charAt(0) >= '!' && isInFacts(block.charAt(1)))
+                return !(isInFacts(block.charAt(1)));
         }
         Message.errorMsg("Not in facts or Wrong block to get fact: " + block);
         return false;
@@ -295,21 +307,19 @@ public class Parser {
         System.out.println("\nI need to: " + raw.get(i - 2) + raw.get(i) + raw.get(i - 1));
         if (isCorrect(raw.get(i - 2)) && isCorrect(raw.get(i - 1))){
 
-            boolean operandA=false;
-            boolean operandB=false;
+            boolean operandA = getValueFromFacts(raw.get(i - 2));
+            boolean operandB = getValueFromFacts(raw.get(i - 1));
 
-            if (isInFacts(raw.get(i - 2))) {
-                operandA = getValueFromFacts(raw.get(i - 2));
-                System.out.println(raw.get(i - 2) + " is  in facts and is " + (operandA ?"TRUE":"FALSE"));
+            if (isDefined(raw.get(i - 2))) {
+                System.out.println(raw.get(i - 2) + " is defined and is " + (operandA ?"TRUE":"FALSE"));
             } else {
-                System.out.println(raw.get(i - 2) + " is not in facts");
+                System.out.println(raw.get(i - 2) + " is UNDEFINED, so assume as FALSE");
             }
 
-            if (isInFacts(raw.get(i - 1))) {
-                operandB = getValueFromFacts(raw.get(i - 1));
-                System.out.println(raw.get(i - 1) + " is  in facts and is " + (operandB ?"TRUE":"FALSE"));
+            if (isDefined(raw.get(i - 1))) {
+                System.out.println(raw.get(i - 1) + " is defined and is " + (operandB ?"TRUE":"FALSE"));
             } else {
-                System.out.println(raw.get(i - 1) + " is not in facts");
+                System.out.println(raw.get(i - 1) + " is UNDEFINED, so assume as FALSE");
             }
 
             switch (raw.get(i).charAt(0)){
@@ -363,7 +373,7 @@ public class Parser {
                 if (isOperand(raw.get(i))) {
                     if (i >= 2) {//якщо зліва є два символи
                         raw = solveBlock(raw, i);
-                        System.out.println("Notation after solving block: " + raw.toString());
+                        System.out.println("Polska Notation after solving block: " + raw.toString());
                     } else
                         break;
                 }
@@ -385,7 +395,7 @@ public class Parser {
                 Message.errorMsg("ERROR: this is not handled");
             return false;
         }else {
-            Message.errorMsg("EROR: empty input in solweRaw()");
+            Message.errorMsg("ERROR: empty input in solveRaw()");
             return false;
         }
 
@@ -396,12 +406,12 @@ public class Parser {
         ArrayList<Integer> masCondit = new ArrayList<>();
 
         if (!Main.facts.contains(query)) {
-            System.out.println("\u001B[33m" + "Querie to evaluete: " + query + "\u001B[0m");
+            System.out.println("\u001B[33m" + "Query to evaluate: " + query + "\u001B[0m");
             int indexQuery = query - 'A';
             masQuery = findAllQuery(indexQuery);
             System.out.println("masQuery " + masQuery.size());
-            if (masQuery.size() < 1) {
-                Main.mapOfFacts.put(query, false);
+            if (masQuery.size() < 1) {//якщо немає в стовпці 2 (справа)
+                Main.mapOfFacts.put(query, Main.UNDEFINED);
             }
             for (int j = 0; j < masQuery.size(); j++) {
                 masCondit = findAllCondition(masQuery.get(j));
@@ -409,8 +419,24 @@ public class Parser {
                 for (int k = 0; k < masCondit.size(); k++) {
                     bc((char) (masCondit.get(k) + 'A'));
                 }
-                Message.infoMsg("\nNik's magic result is: " + solve(masQuery.get(j)));
-//                solve(masQuery.get(j));
+                boolean nikResult =  solve(masQuery.get(j));
+                Message.infoMsg("\nNik's magic result is: " + nikResult);
+                if (nikResult)
+                {
+                    if (!Main.facts.contains(query))
+                    {
+                        Main.facts.add(query);
+                        System.out.println("Adding \'" + query + "\' to facts");
+                    }
+                    Main.mapOfFacts.replace(query, Main.TRUE);
+                    System.out.println("Setting \'" + query + "\' in mapOfFacts  to TRUE");
+                }else{
+                    if (Main.mapOfFacts.replace(query, Main.UNDEFINED, Main.FALSE)) {
+                        System.out.println("Setting \'" + query + "\' in mapOfFacts from UNDEFINED to FALSE");
+                    }
+
+                }
+                Message.infoMsg("Task was to find: " + query + "\n\n\n\n\n");
             }
         }
     }
