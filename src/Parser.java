@@ -376,7 +376,13 @@ public class Parser {
             else
                 return false;
         }else if (raw.size() == 2){
-            Message.errorMsg("Lasted TWO:" + raw.toString());
+            Message.infoMsg("Lasted TWO:" + raw.toString());
+            if (raw.get(0).equals("!") && isCorrect(raw.get(1)))
+            {
+                return !(getValueFromFacts(raw.get(1)));
+            }
+            else
+                Message.errorMsg("ERROR: this is not handled");
             return false;
         }else {
             Message.errorMsg("EROR: empty input in solweRaw()");
