@@ -1,3 +1,5 @@
+package com.nn;
+
 import java.util.*;
 
 public class Algo {
@@ -67,7 +69,7 @@ public class Algo {
             if (isOperator(stack.peek()))
                 postfix.add(stack.pop());
         }
-//    System.out.println(postfix);
+//    if (Main.debugOn)System.out.println(postfix);
         return postfix;
     }
 

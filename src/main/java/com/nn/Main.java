@@ -1,3 +1,5 @@
+package com.nn;
+
 import org.apache.commons.cli.*;
 
 import java.io.*;
@@ -24,19 +26,21 @@ public class Main {
     public static final Integer FALSE = 0;
     public static final Integer TRUE = 1;
 
+    public static final boolean debugOn = false;
+
     public static void outputRes() {
         System.out.println("\u001B[32m" + "The Result is next: " + "\u001B[0m");
         for (int i = 0; i < queries.size(); i++) {
-            if (mapOfFacts.get(queries.get(i)) == null) {
-                System.out.println("\u001B[32m" + queries.get(i) + " = " + false + "\u001B[0m");}
-                else
-                System.out.println("\u001B[32m" + queries.get(i) + " = " + mapOfFacts.get(queries.get(i)) + "\u001B[0m");
+            if (mapOfFacts.get(queries.get(i)).equals(Main.UNDEFINED))
+                System.out.println("\u001B[32m" + queries.get(i) + " = " + false + "\u001B[0m");
+            else
+                System.out.println("\u001B[32m" + queries.get(i) + " = " + mapOfFacts.get(queries.get(i)).equals(Main.TRUE) + "\u001B[0m");
         }
     }
 
     public static void setTableGrid(){
         tableGrid = new Integer[Main.countRaw][26];
-        System.out.println("leftPart = " + leftPart);
+        if (Main.debugOn) System.out.println("leftPart = " + leftPart);
 
         for (Map.Entry<Character, Integer> oneEntry : mapOfFacts.entrySet()) {
             for (int j = 0; j < countRaw; j++) {
@@ -76,7 +80,7 @@ public class Main {
             goal = cmd.getOptionValue("goals");
             fact = cmd.getOptionValue("facts");
 
-            System.out.println("path = " + path);
+            System.out.println("\npath = " + path);
             if (path != null) {
                 File f = new File(path);
                 if (!f.exists() || f.isDirectory()) {
@@ -101,8 +105,8 @@ public class Main {
             table.add(tmp.toString());
             tableList.add(tmp);
             tableRight.add(Algo.parse(rightPart.get(i)).toString());
-            System.out.println("table = " + table.get(i));
-            System.out.println("tableRight = " + tableRight.get(i));
+            if (Main.debugOn)System.out.println("table = " + table.get(i));
+            if (Main.debugOn)System.out.println("tableRight = " + tableRight.get(i));
 
         }
 
@@ -132,9 +136,9 @@ public class Main {
         //delete
         for (int i = 0; i < Main.countRaw; i++) {
             for (int j = 0; j < 26; j++) {
-                System.out.print(String.format("%3d", tableGrid[i][j]));
+                if (Main.debugOn)System.out.print(String.format("%3d", tableGrid[i][j]));
             }
-            System.out.println();
+            if (Main.debugOn)System.out.println();
         }
 
         for (Character query : queries) {
@@ -148,12 +152,12 @@ public class Main {
                     for (int l = Main.queries.size() - 1; l >= 0; l--) {
                         Main.queries.remove(l);
                     }
-                    System.out.println("IS= " + Main.queries);
-                    System.out.println("New goal(s) added");
+                    if (Main.debugOn)System.out.println("IS= " + Main.queries);
+                    if (Main.debugOn)System.out.println("New goal(s) added");
                     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-                    System.out.println("Enter new goal(s), which you want to find");
+                    if (Main.debugOn)System.out.println("Enter new goal(s), which you want to find");
                     String string = br.readLine();
-                    System.out.println("Read string from input: " + string);
+                    if (Main.debugOn)System.out.println("Read string from input: " + string);
                     if (string.matches("[A-Z]+")) {
                         for (int k = 0; k < string.length(); k++)
                             Main.queries.add(string.charAt(k));
@@ -170,18 +174,18 @@ public class Main {
                     for (int l = Main.facts.size() - 1; l >= 0; l--) {
                         Main.facts.remove(l);
                     }
-                    System.out.println("facts= " + Main.facts);
-                    System.out.println("New fact(s) added");
+                    if (Main.debugOn)System.out.println("facts= " + Main.facts);
+                    if (Main.debugOn)System.out.println("New fact(s) added");
                     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-                    System.out.println("Enter new fact(s), which you want to find");
+                    if (Main.debugOn)System.out.println("Enter new fact(s), which you want to find");
                     String string = br.readLine();
-                    System.out.println("Read string from input: " + string);
+                    if (Main.debugOn)System.out.println("Read string from input: " + string);
                     if (string.matches("[A-Z]+")) {
                         for (int k = 0; k < string.length(); k++)
                             Main.facts.add(string.charAt(k));
                     } else Message.exception("ERROR:  Bad bonus input");
                     Parser.addFactsToMap();
-                    System.out.println("bonus facts = " + facts);
+                    if (Main.debugOn)System.out.println("bonus facts = " + facts);
                     setTableGrid();
                 } catch (IOException ex) {
                     System.out.println(ex.getMessage());
@@ -195,6 +199,6 @@ public class Main {
             outputRes();
         }
 
-        System.out.println("End!");
+        if (Main.debugOn)System.out.println("End!");
     }
 }

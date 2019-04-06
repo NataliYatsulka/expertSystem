@@ -1,3 +1,5 @@
+package com.nn;
+
 public class Structure {
   public String leftSide;
   public String rightSize;

@@ -1,6 +1,8 @@
+package com.nn;
+
 import java.util.*;
 import java.lang.*;
-import java.io.*;
+
 //http://java.mazurok.com/?p=454
 class ExpressionParser {
   private static String operators = "+^|";

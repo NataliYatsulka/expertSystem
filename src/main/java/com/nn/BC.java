@@ -1,6 +1,8 @@
+package com.nn;
+
 import java.util.*;
 
-// to run simply do a: new BC(ask,tell) and then bc.execute()
+// to run simply do a: new com.nn.BC(ask,tell) and then bc.execute()
 // ask is a propositional symbol
 // and tell is a knowledge base
 // ask : p
@@ -141,7 +143,7 @@ class BC {
 
   public static void main(String[] args) {
     BC bc = new BC("p", "p=>q;q=>r;r");
-    System.out.println(bc.execute());
+    if (Main.debugOn)System.out.println(bc.execute());
     bc.execute();
   }
 

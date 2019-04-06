@@ -1,3 +1,5 @@
+package com.nn;
+
 public class Message {
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_GREEN = "\u001B[32m";
@@ -17,6 +19,7 @@ public class Message {
     }
 
     public static void infoMsg(String msg){
-        System.out.println(ANSI_GREEN + msg + ANSI_RESET);
+
+        if (Main.debugOn)System.out.println(ANSI_GREEN + msg + ANSI_RESET);
     }
 }
