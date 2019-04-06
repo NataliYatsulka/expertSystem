@@ -133,10 +133,12 @@ public class Parser {
                     } else if ((prev == '!' && (next == '+' || next == '^' || next == '|' || next == '!'))
                             || (prev == '(' && (next == '+' || next == '^' || next == '|' || next == ')'))
                             || ((Character.isLetter(prev) || prev == ')') && (next == '(' || Character.isLetter(next) || next == '!'))
-                            || ((prev == '+' || prev == '^' || prev == '|') && (next == '+' || next == '^' || next == '|' || next == ')')))
+                            || ((prev == '+' || prev == '^' || prev == '|') && (next == '+' || next == '^' || next == '|' || next == ')'))) {
                         Message.exception("ERROR:  Row can not have after " + prev + " - " + next);
-                } else if (j == left.get(i).length() - 1 && (prev == '|' || prev == '^' || prev == '+'))
-                    Message.errorMsg("ERROR:  Bad raw " + (i + 1));
+                    } else if (j == left.get(i).length() - 1 && (prev == '|' || prev == '^' || prev == '+')) {
+                        Message.errorMsg("ERROR:  Bad raw " + (i + 1));
+                    }
+                }
             }
         }
     }
