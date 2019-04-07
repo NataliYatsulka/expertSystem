@@ -2,15 +2,49 @@
 # all the required rules and symbols, along with the bonus ones, will be
 # shown here. spacing is not important
 
+
+B => A
+D + E => B
+G + H => F
+I + J => G
+G => H
+L + M => K
+O + P => L + N
+N => M
+
+=DEIJOP # AFKP will be True.
+
+?AFKP
+
+
+
+= A + B
+= A + !B
+= A + !(B)
+= !A + !(B)
+= !(A + !(B))
+= A + B + C
+= !(A+B+C)
+= !(A+!B+C)
+
+= !(!A+B+!C)
+
+= !(A+C+!C)
+
+=> L + C + !C
+
 #(A + B) + !(C + !(D) => F # A and not B implies F
-B + C | => A
-!(A + !(B)) => Z
+
+#B + C | => A
+
+
+#!(A + !(B)) => Z
 #!(A) + !(B) => Z
 
-=ABCD
+#=ABCD
 # Initial facts : A, B and G are true. All others are false.
 # If no facts are initially true, then a simple "=" followed
 # by a newline is used
 
-?Z
+#?Z
 # Queries : What are G, V and X ?

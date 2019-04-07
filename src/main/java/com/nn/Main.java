@@ -26,7 +26,8 @@ public class Main {
     public static final Integer FALSE = 0;
     public static final Integer TRUE = 1;
 
-    public static final boolean debugOn = true;
+    public static final boolean debugOn = false;
+    public static final boolean expandedPrint = true;
 
     public static void outputRes() {
         System.out.println("\u001B[32m" + "The Result is next: " + "\u001B[0m");

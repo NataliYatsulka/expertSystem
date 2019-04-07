@@ -358,24 +358,24 @@ public class Parser {
 
     public static LinkedList<String> solveBlock(LinkedList<String> raw, int i) {
         boolean result = false;
-        if (Main.debugOn) System.out.println("\nI need to: " + raw.get(i - 2) + raw.get(i) + raw.get(i - 1));
+        if (Main.expandedPrint) System.out.println("\nI need to: " + raw.get(i - 2) + raw.get(i) + raw.get(i - 1));
         if (isCorrect(raw.get(i - 1))) {
             if (isCorrect(raw.get(i - 2), true)) {
                 boolean operandA = getValueFromFacts(raw.get(i - 2));
                 boolean operandB = getValueFromFacts(raw.get(i - 1));
 
                 if (isDefined(raw.get(i - 2))) {
-                    if (Main.debugOn)
+                    if (Main.expandedPrint)
                         System.out.println(raw.get(i - 2) + " is defined and is " + (operandA ? "TRUE" : "FALSE"));
                 } else {
-                    if (Main.debugOn) System.out.println(raw.get(i - 2) + " is UNDEFINED, so assume as FALSE");
+                    if (Main.expandedPrint) System.out.println(raw.get(i - 2) + " is UNDEFINED, so assume as FALSE");
                 }
 
                 if (isDefined(raw.get(i - 1))) {
-                    if (Main.debugOn)
+                    if (Main.expandedPrint)
                         System.out.println(raw.get(i - 1) + " is defined and is " + (operandB ? "TRUE" : "FALSE"));
                 } else {
-                    if (Main.debugOn) System.out.println(raw.get(i - 1) + " is UNDEFINED, so assume as FALSE");
+                    if (Main.expandedPrint) System.out.println(raw.get(i - 1) + " is UNDEFINED, so assume as FALSE");
                 }
 
                 switch (raw.get(i).charAt(0)) {
@@ -439,7 +439,7 @@ public class Parser {
                 if (isOperand(raw.get(i))) {
                     if (i >= 2) {//якщо зліва є два символи
                         raw = solveBlock(raw, i);
-                        if (Main.debugOn) System.out.println("Polska Notation after solving block: " + raw.toString());
+                        if (Main.expandedPrint) System.out.println("Polska Notation after solving block: " + raw.toString());
                         i = -1;
                         break;
                     } else
@@ -452,10 +452,10 @@ public class Parser {
             }
             return solveRaw(raw);
         } else if (raw.size() == 1) {
-            Message.infoMsg("Lasted ONE:" + raw.toString());
+            if (Main.debugOn) Message.infoMsg("Lasted ONE:" + raw.toString());
             return (getValueFromFacts(raw.get(0)));
         } else if (raw.size() == 2) {
-            Message.infoMsg("Lasted TWO:" + raw.toString());
+            if (Main.debugOn) Message.infoMsg("Lasted TWO:" + raw.toString());
             if (raw.get(0).equals("!") && isCorrect(raw.get(1))) {
                 return !(getValueFromFacts(raw.get(1)));
             } else
@@ -473,7 +473,7 @@ public class Parser {
         ArrayList<Integer> masCondit = new ArrayList<>();
 
         if (!Main.facts.contains(query)) {
-            if (Main.debugOn) System.out.println("\u001B[33m" + "Query to evaluate: " + query + "\u001B[0m");
+            System.out.println("\u001B[33m" + "Query to evaluate: " + query + "\u001B[0m");
             int indexQuery = query - 'A';
             masQuery = findAllQuery(indexQuery);
             if (Main.debugOn) System.out.println("masQuery " + masQuery.size());
@@ -490,25 +490,25 @@ public class Parser {
                     }
                 }
                 boolean nikResult = solve(masQuery.get(j));
-                Message.infoMsg("\nNik's magic result is: " + nikResult);
+                if (Main.debugOn)Message.infoMsg("\nNik's magic result is: " + nikResult);
                 if (nikResult) {
                     if (!Main.facts.contains(query)) {
                         Main.facts.add(query);
-                        if (Main.debugOn) System.out.println("Adding \'" + query + "\' to facts");
+                        if (Main.expandedPrint) System.out.println("Adding \'" + query + "\' to facts");
                     }
                     Main.mapOfFacts.replace(query, Main.TRUE);
-                    if (Main.debugOn) System.out.println("Setting \'" + query + "\' in mapOfFacts  to TRUE");
+                    if (Main.expandedPrint) System.out.println("Setting \'" + query + "\' in mapOfFacts  to TRUE");
 //                    Main.tableRight[masQuery.get(j)];
-                    Message.infoMsg("Need to check this right part: " + Main.tableRight.get(masQuery.get(j)));
+//                    Message.infoMsg("Need to check this right part: " + Main.tableRight.get(masQuery.get(j)));
 
                 } else {
                     if (Main.mapOfFacts.replace(query, Main.UNDEFINED, Main.FALSE)) {
-                        if (Main.debugOn)
+                        if (Main.expandedPrint)
                             System.out.println("Setting \'" + query + "\' in mapOfFacts from UNDEFINED to FALSE");
                     }
 
                 }
-                Message.infoMsg("Task was to find: " + query + "\n\n\n\n\n");
+                Message.infoMsg("Task was to find: " + query + "\n\n");
                 Arrays.fill(Main.beingInThisRaw, false);
             }
         }

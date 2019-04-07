@@ -20,6 +20,6 @@ public class Message {
 
     public static void infoMsg(String msg){
 
-        if (Main.debugOn)System.out.println(ANSI_GREEN + msg + ANSI_RESET);
+        if (Main.expandedPrint)System.out.println(ANSI_GREEN + msg + ANSI_RESET);
     }
 }
