@@ -1,6 +1,5 @@
 package com.nn;
 
-import com.sun.org.apache.xml.internal.security.algorithms.MessageDigestAlgorithm;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -10,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -82,7 +82,7 @@ public class Parser {
                 count++;
                 list.remove(i);
                 i--;
-            }else if (list.get(i).matches("\\?[A-Z]+")) {
+            } else if (list.get(i).matches("\\?[A-Z]+")) {
                 String[] s = list.get(i).split("\\?");
                 for (int k = 0; k < s[1].length(); k++)
                     Main.queries.add(s[1].charAt(k));
@@ -95,9 +95,9 @@ public class Parser {
         Main.countRaw++;
 //    Main.beingInThisRaw = new boolean[++countRaw];
 //    System.out.println("booleanMass   = " + Main.beingInThisRaw);
-        if (Main.debugOn)System.out.println("ooo =" + list);
+        if (Main.debugOn) System.out.println("ooo =" + list);
 //    Main.countRaw = countRaw;
-        if (Main.debugOn)System.out.println("Main.countRaw = " + Main.countRaw);
+        if (Main.debugOn) System.out.println("Main.countRaw = " + Main.countRaw);
         if (Main.debugOn) System.out.println(Main.facts + "     " + Main.queries);
         if (count != 2)
             Message.exception("ERROR:  more than one time = or ?");
@@ -169,10 +169,10 @@ public class Parser {
         checkLeftRightSiteOfRow(Main.leftPart);
         checkLeftRightSiteOfRow(Main.rightPart);
         addFactsToMap();
-        if (Main.debugOn)System.out.println("mapOfFacts = " + Main.mapOfFacts);
-        if (Main.debugOn)System.out.println("facts =" + Main.facts);
+        if (Main.debugOn) System.out.println("mapOfFacts = " + Main.mapOfFacts);
+        if (Main.debugOn) System.out.println("facts =" + Main.facts);
         for (int z = 0; z < structures.size(); z++) {
-            if (Main.debugOn)System.out.println("qqq    = " + structures.get(z).toString());
+            if (Main.debugOn) System.out.println("qqq    = " + structures.get(z).toString());
         }
         return true;
     }
@@ -235,7 +235,7 @@ public class Parser {
         return false;
     }
 
-    public static boolean isInFacts(char letter){
+    public static boolean isInFacts(char letter) {
         if (letter <= 'A' && letter >= 'Z') {
             Message.errorMsg("Wrong letter to search!");
         }
@@ -244,7 +244,7 @@ public class Parser {
         return false;
     }
 
-    public static boolean isDefined(String block){
+    public static boolean isDefined(String block) {
         if (block == null)
             Message.errorMsg("ERROR: NULL was passed to isUndefined()!");
         if (block.equals("true") || block.equals("false"))
@@ -256,7 +256,7 @@ public class Parser {
         return false;
     }
 
-    public static boolean isInFacts(String block){
+    public static boolean isInFacts(String block) {
         if (block == null)
             Message.errorMsg("ERROR: NULL was passed to isCorrect()!");
         if (block.equals("true") || block.equals("false"))
@@ -271,7 +271,7 @@ public class Parser {
         return false;
     }
 
-    public static boolean getValueFromFacts(String block){
+    public static boolean getValueFromFacts(String block) {
         if (block == null)
             Message.errorMsg("ERROR: NULL was passed to getValueFromFacts()!");
         if (block.equals("true"))
@@ -288,11 +288,11 @@ public class Parser {
         return false;
     }
 
-    public static  boolean isCorrect(String block){
+    public static boolean isCorrect(String block) {
         return isCorrect(block, false);
     }
 
-    public static boolean isCorrect(String block, boolean silent){
+    public static boolean isCorrect(String block, boolean silent) {
         if (block == null)
             Message.errorMsg("ERROR: NULL was passed to isCorrect()!");
         if (block.equals("true") || block.equals("false"))
@@ -308,11 +308,10 @@ public class Parser {
     }
 
 
-
-    public static boolean isOperand(String block){
+    public static boolean isOperand(String block) {
         if (block != null && block.length() == 1
                 && (block.charAt(0) == '+' || block.charAt(0) == '^' || block.charAt(0) == '|')
-           )
+                )
             return true;
         return false;
     }
@@ -320,7 +319,8 @@ public class Parser {
     public static LinkedList<String> tryToFixNots(LinkedList<String> raw, int posToFixFrom) {
         return tryToFixNots(raw, posToFixFrom, false);
     }
-    public static LinkedList<String> tryToFixNots(LinkedList<String> raw, int posToFixFrom, boolean disablePreviousOperandCheck){
+
+    public static LinkedList<String> tryToFixNots(LinkedList<String> raw, int posToFixFrom, boolean disablePreviousOperandCheck) {
         if (!disablePreviousOperandCheck && posToFixFrom == 1) {
             Message.errorMsg("Unfixable raw!");
         }
@@ -328,7 +328,7 @@ public class Parser {
         int count_nots = 0;
         int i;
 
-        for (i = posToFixFrom - 1; i >= 0; i--){
+        for (i = posToFixFrom - 1; i >= 0; i--) {
             if (raw.get(i).equals("!"))
                 count_nots++;
             else
@@ -347,7 +347,7 @@ public class Parser {
 
         if (count_nots % 2 == 1)
             raw.set(posToFixFrom, "!" + raw.get(posToFixFrom));
-        for (int z = posToFixFrom - 1; z > i; z--){
+        for (int z = posToFixFrom - 1; z > i; z--) {
             if (z < 0)
                 break;
             raw.remove(z);
@@ -356,12 +356,11 @@ public class Parser {
         return raw;
     }
 
-    public static LinkedList<String> solveBlock(LinkedList<String> raw, int i){
-        boolean result=false;
-        if (Main.debugOn)System.out.println("\nI need to: " + raw.get(i - 2) + raw.get(i) + raw.get(i - 1));
-        if (isCorrect(raw.get(i - 1))){
-            if(isCorrect(raw.get(i - 2), true))
-            {
+    public static LinkedList<String> solveBlock(LinkedList<String> raw, int i) {
+        boolean result = false;
+        if (Main.debugOn) System.out.println("\nI need to: " + raw.get(i - 2) + raw.get(i) + raw.get(i - 1));
+        if (isCorrect(raw.get(i - 1))) {
+            if (isCorrect(raw.get(i - 2), true)) {
                 boolean operandA = getValueFromFacts(raw.get(i - 2));
                 boolean operandB = getValueFromFacts(raw.get(i - 1));
 
@@ -410,19 +409,16 @@ public class Parser {
                 }
 
                 Message.infoMsg("Result of calculation: " + (result ? "TRUE" : "FALSE"));
-            }
-            else
-            {
+            } else {
                 raw = tryToFixNots(raw, i - 1);
             }
-        }
-        else
+        } else
             Message.errorMsg("Right operand is incorrect: " + raw.get(i - 1));
         return raw;
     }
 
-    public static int findFirstOperand(LinkedList<String> raw){
-        for (int i = 0; i < raw.size(); i++){
+    public static int findFirstOperand(LinkedList<String> raw) {
+        for (int i = 0; i < raw.size(); i++) {
             if (!raw.get(i).equals("!"))
                 return i;
         }
@@ -430,45 +426,42 @@ public class Parser {
         return -1;
     }
 
-    public static boolean solve(int j){
-        if (Main.debugOn)System.out.println("\nNow:" + Main.tableList.get(j).toString());
+    public static boolean solve(int j) {
+        if (Main.debugOn) System.out.println("\nNow:" + Main.tableList.get(j).toString());
         return solveRaw(Main.tableList.get(j));
     }
 
     public static boolean solveRaw(LinkedList<String> raw) {
-        if (Main.debugOn)System.out.println();
+        if (Main.debugOn) System.out.println();
         if (raw.size() >= 3) {
-            int  i;
+            int i;
             for (i = 0; i < raw.size(); i++) {
                 if (isOperand(raw.get(i))) {
                     if (i >= 2) {//якщо зліва є два символи
                         raw = solveBlock(raw, i);
-                        if (Main.debugOn)System.out.println("Polska Notation after solving block: " + raw.toString());
+                        if (Main.debugOn) System.out.println("Polska Notation after solving block: " + raw.toString());
                         i = -1;
                         break;
                     } else
                         break;
                 }
             }
-            if (i >= raw.size())
-            {
+            if (i >= raw.size()) {
                 raw = tryToFixNots(raw, findFirstOperand(raw), true);
 //                Message.errorMsg("it is a trap!");
             }
             return solveRaw(raw);
-        }else if (raw.size() == 1) {
+        } else if (raw.size() == 1) {
             Message.infoMsg("Lasted ONE:" + raw.toString());
             return (getValueFromFacts(raw.get(0)));
-        }else if (raw.size() == 2){
+        } else if (raw.size() == 2) {
             Message.infoMsg("Lasted TWO:" + raw.toString());
-            if (raw.get(0).equals("!") && isCorrect(raw.get(1)))
-            {
+            if (raw.get(0).equals("!") && isCorrect(raw.get(1))) {
                 return !(getValueFromFacts(raw.get(1)));
-            }
-            else
+            } else
                 Message.errorMsg("ERROR: this is not handled");
             return false;
-        }else {
+        } else {
             Message.errorMsg("ERROR: empty input in solveRaw()");
             return false;
         }
@@ -480,37 +473,43 @@ public class Parser {
         ArrayList<Integer> masCondit = new ArrayList<>();
 
         if (!Main.facts.contains(query)) {
-            if (Main.debugOn)System.out.println("\u001B[33m" + "Query to evaluate: " + query + "\u001B[0m");
+            if (Main.debugOn) System.out.println("\u001B[33m" + "Query to evaluate: " + query + "\u001B[0m");
             int indexQuery = query - 'A';
             masQuery = findAllQuery(indexQuery);
-            if (Main.debugOn)System.out.println("masQuery " + masQuery.size());
+            if (Main.debugOn) System.out.println("masQuery " + masQuery.size());
             if (masQuery.size() < 1) {//якщо немає в стовпці 2 (справа)
                 Main.mapOfFacts.put(query, Main.UNDEFINED);
             }
             for (int j = 0; j < masQuery.size(); j++) {
                 masCondit = findAllCondition(masQuery.get(j));
-                if (Main.debugOn)System.out.println("masCond" + masCondit);
+                if (Main.debugOn) System.out.println("masCond" + masCondit);
                 for (int k = 0; k < masCondit.size(); k++) {
-                    bc((char) (masCondit.get(k) + 'A'));
+                    if (!Main.beingInThisRaw[j]) {
+                        Main.beingInThisRaw[j] = true;
+                        bc((char) (masCondit.get(k) + 'A'));
+                    }
                 }
-                boolean nikResult =  solve(masQuery.get(j));
+                boolean nikResult = solve(masQuery.get(j));
                 Message.infoMsg("\nNik's magic result is: " + nikResult);
-                if (nikResult)
-                {
-                    if (!Main.facts.contains(query))
-                    {
+                if (nikResult) {
+                    if (!Main.facts.contains(query)) {
                         Main.facts.add(query);
-                        if (Main.debugOn)System.out.println("Adding \'" + query + "\' to facts");
+                        if (Main.debugOn) System.out.println("Adding \'" + query + "\' to facts");
                     }
                     Main.mapOfFacts.replace(query, Main.TRUE);
-                    if (Main.debugOn)System.out.println("Setting \'" + query + "\' in mapOfFacts  to TRUE");
-                }else{
+                    if (Main.debugOn) System.out.println("Setting \'" + query + "\' in mapOfFacts  to TRUE");
+//                    Main.tableRight[masQuery.get(j)];
+                    Message.infoMsg("Need to check this right part: " + Main.tableRight.get(masQuery.get(j)));
+
+                } else {
                     if (Main.mapOfFacts.replace(query, Main.UNDEFINED, Main.FALSE)) {
-                        if (Main.debugOn)System.out.println("Setting \'" + query + "\' in mapOfFacts from UNDEFINED to FALSE");
+                        if (Main.debugOn)
+                            System.out.println("Setting \'" + query + "\' in mapOfFacts from UNDEFINED to FALSE");
                     }
 
                 }
                 Message.infoMsg("Task was to find: " + query + "\n\n\n\n\n");
+                Arrays.fill(Main.beingInThisRaw, false);
             }
         }
     }

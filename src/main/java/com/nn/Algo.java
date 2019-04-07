@@ -27,8 +27,10 @@ public class Algo {
 
     public static int priority(String token) {
         if (token.equals("(")) return 1;
-        if (token.equals("^") || token.equals("|") || token.equals("+")) return 2;
-        if (token.equals("!")) return 3;
+        if (token.equals("!")) return 2;
+        if (token.equals("+")) return 5;
+        if (token.equals("|")) return 4;
+        if (token.equals("^")) return 3;
         return 1;
     }
 
